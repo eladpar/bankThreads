@@ -15,5 +15,5 @@ bank.o: bank.cpp
 # signals.o: signals.cpp signals.h
 # Cleaning old files before new make
 clean:
-	$(RM) $(TARGET) *.o *~ "#"* core.*
+	$(RM) Bank *.o *~ "#"* core.*
 

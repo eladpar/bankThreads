@@ -12,7 +12,8 @@ using namespace std;
 //**************************************************************************************
 int main(int argc, char **argv)
 {
-  int NumATM = atoi(argv[1]);
+    if (argc < 3) cerr << "illegal arguments" << endl;
+    int NumATM = atoi(argv[1]);
     for (int i = 2; i < NumATM+2; i ++)
     {
         ifstream file(argv[i]);
@@ -20,6 +21,7 @@ int main(int argc, char **argv)
         if (!file || !file.good()) 
         {
             // File doesn't exist or some other error
+            cerr << "illegal arguments" << endl;
             //TODO any last words?
             exit(1);
 	    }
@@ -39,7 +41,7 @@ int main(int argc, char **argv)
             }
             file.close();
         }
-        else cout << "Unable to open file"; 
+        else cerr << "Unable to open file"; 
 
     }
     
