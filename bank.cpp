@@ -12,8 +12,7 @@ using namespace std;
 //**************************************************************************************
 int main(int argc, char **argv)
 {
-    int NumATM = atoi(argv[1]);
-
+  int NumATM = atoi(argv[1]);
     for (int i = 2; i < NumATM+2; i ++)
     {
         ifstream file(argv[i]);
@@ -21,7 +20,6 @@ int main(int argc, char **argv)
         if (!file || !file.good()) 
         {
             // File doesn't exist or some other error
-            cout << "illegal arguments" << endl;
             //TODO any last words?
             exit(1);
 	    }
@@ -31,16 +29,18 @@ int main(int argc, char **argv)
             {
                 string delimiter = " ";
                 string Action = line.substr(0, line.find(delimiter)); 
+                line.erase(0, line.find(delimiter) + delimiter.length());
                 string AccountNumber = line.substr(0, line.find(delimiter)); 
+                line.erase(0, line.find(delimiter) + delimiter.length());
                 string Password = line.substr(0, line.find(delimiter)); 
+                line.erase(0, line.find(delimiter) + delimiter.length());
                 string InitialAmount = line.substr(0, line.find(delimiter)); 
-                cout << "Action is : " << Action << "Account Number is: " << AccountNumber << "Password is: " << Password << "Initial Amount is: " << InitialAmount << endl;
+                cout << "Action is : " << Action << " Account Number is: " << AccountNumber << " Password is: " << Password << " Initial Amount is: " << InitialAmount << endl;
             }
             file.close();
         }
         else cout << "Unable to open file"; 
 
-        
     }
     
 
