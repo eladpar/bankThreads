@@ -1,1 +1,223 @@
-<mxfile host="app.diagrams.net" modified="2020-12-13T12:22:02.324Z" agent="5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36" version="14.0.1" etag="bxwmLTuN6ogGUMt_f4LY" type="github"><diagram id="prtHgNgQTEPvFCAcTncT" name="Page-1">7VpNc5swEP01PnYGEHbcY+PmY6ZOJjM+9KwgBdQK5BHCmPz6SkYyn8EkxglOmkvQYxHSe6vdlfAELMLtDYfr4I4hTCeOhbYT8HPiOLbjAPlPIVmOzNxpDvicIG1UACvyjDVoaTQhCMcVQ8EYFWRdBT0WRdgTFQxyztKq2ROj1beuoY8bwMqDtIn+JkgEOTp3Lgr8FhM/MG+2Z9/zOyE0xnomcQARS0sQuJqABWdM5FfhdoGpIs/wkj93/cLd/cA4jkSfB9D9Nrv/deFdzB+X6SZG+O52+s3Wo91AmugZP0h69YhFZmiIUxJSGMnWZSBCKkFbXnoBoWgJM5aoEcQCen9N65LjWIr5YIZn16A7qFzEUv0xTp5ZJCDVgOyHC+0JTtVipV6hzZrz15RsMBd4W4I0HzeYhVjwTJrs3VNrk9XaaSG1O9VYUJIZzDQItXv5+74LBeSFFuEVghjHKgnSEAMj6aK6ybgImM8iSK8K9JKzJEIYaaYKmyVjay3GHyxEplmGiWBVZRGMg93zqoEj9EMtJdmM2M4HJHJNKH1RiU5fi1nCPdzFgasXOuQ+7urRmeWGipBOvTmmUJBNdU0Prh2wP0KqkjoehXFMvIpA9ikEmvcUCFjjEmj6X6AaI+64BJp/FYFmfQUaPMTtHpXzhVnJYM1IJOJSzw8KKGXKeTVTArdWbNTsXavTXl7kIyhcZT+VI3Kn1cidS1WzOFYzMLcXNB2lx9tyXf9apK30AC2lx75GGb70mI6i9OjJ8L6sPrjUQN9qYlyx0Iy7Uw5K5UZI0Z4GRODVGu6oSOVe7ChS+7utW13nbosXtzixezIfdg+TVvXQA8Q9ycV/DUNC1QRvMd1gQTyob2gfth3dXjDK+O4lwNr9SRxS4kcqs0jmMT+lFPXdDGhqMW/R4mRbGdDHgc8pu/cOOYb5w9ndGVXIAc0E+mVWTz2Sffjqcc4h/O8PQsYS/+0Ga7oEbLI32hKw6zTqnUvC5vHgmYdwsxMYbINmttojCeFm3J8ghB99nPvRIdy4RqcWAQsfk/hT6eCMLSk0U6lOCuDskkIrme+bFMA4PlEMmBTM+A/W9X0/TAx/anecYp9nV2yW8pvr+pai6n3r+j4JevxJ4dU61HcKLcl5oKQgm8VX9fxsufhtArj6Bw==</diagram></mxfile>
+<mxfile host="app.diagrams.net" modified="2020-12-13T13:27:47.192Z" agent="5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36" etag="gkmm8G6s42TJmzRXKdcu" version="14.0.1" type="github">
+  <diagram id="prtHgNgQTEPvFCAcTncT" name="Page-1">
+    <mxGraphModel dx="2591" dy="801" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="dNxyNK7c78bLwvsdeMH5-19" value="Bank Threading" style="swimlane;html=1;childLayout=stackLayout;resizeParent=1;resizeParentMax=0;horizontal=0;startSize=20;horizontalStack=0;" parent="1" vertex="1">
+          <mxGeometry x="120" y="120" width="1000" height="500" as="geometry" />
+        </mxCell>
+        <mxCell id="dNxyNK7c78bLwvsdeMH5-20" value="ATM 1" style="swimlane;html=1;startSize=20;horizontal=0;" parent="dNxyNK7c78bLwvsdeMH5-19" vertex="1">
+          <mxGeometry x="20" width="980" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="dNxyNK7c78bLwvsdeMH5-23" value="open account 1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="dNxyNK7c78bLwvsdeMH5-20" vertex="1">
+          <mxGeometry x="30" y="40" width="50" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="dNxyNK7c78bLwvsdeMH5-24" value="deposit" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;align=center;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="dNxyNK7c78bLwvsdeMH5-20" vertex="1">
+          <mxGeometry x="120" y="30" width="80" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dNxyNK7c78bLwvsdeMH5-30" value="Whats balance in account 1?" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;align=center;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="dNxyNK7c78bLwvsdeMH5-20" vertex="1">
+          <mxGeometry x="240" y="35" width="80" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-47" value="" style="endArrow=none;dashed=1;html=1;" edge="1" parent="dNxyNK7c78bLwvsdeMH5-20">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="100" y="500" as="sourcePoint" />
+            <mxPoint x="100" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-48" value="&lt;font color=&quot;#0000e3&quot;&gt;&lt;b&gt;Writer acc1&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="dNxyNK7c78bLwvsdeMH5-20">
+          <mxGeometry x="20" width="80" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-54" value="&lt;font color=&quot;#0000e3&quot;&gt;&lt;b&gt;Writer acc1&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="dNxyNK7c78bLwvsdeMH5-20">
+          <mxGeometry x="100" width="120" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-58" value="&lt;b&gt;&lt;font color=&quot;#ff261f&quot;&gt;Reader acc1&lt;/font&gt;&lt;/b&gt;" style="text;html=1;strokeColor=#d6b656;fillColor=#fff2cc;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="dNxyNK7c78bLwvsdeMH5-20">
+          <mxGeometry x="220" width="120" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-62" value="" style="endArrow=none;dashed=1;html=1;" edge="1" parent="dNxyNK7c78bLwvsdeMH5-20">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="460" y="510" as="sourcePoint" />
+            <mxPoint x="460" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-63" value="&lt;font color=&quot;#0000e3&quot;&gt;&lt;b&gt;Writer acc1&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="dNxyNK7c78bLwvsdeMH5-20">
+          <mxGeometry x="340" width="120" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-64" value="Whats balance in account 1?" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;align=center;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="dNxyNK7c78bLwvsdeMH5-20">
+          <mxGeometry x="350" y="30" width="100" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-65" value="AMOUNT--" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffcccc;strokeColor=#36393d;" vertex="1" parent="dNxyNK7c78bLwvsdeMH5-20">
+          <mxGeometry x="350" y="90" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-67" value="&lt;font color=&quot;#0000e3&quot;&gt;&lt;b&gt;Writer acc2&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="dNxyNK7c78bLwvsdeMH5-20">
+          <mxGeometry x="460" width="120" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-68" value="Whats balance in account 2?" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;align=center;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="dNxyNK7c78bLwvsdeMH5-20">
+          <mxGeometry x="470" y="30" width="100" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-94" value="AMOUNT++" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffcccc;strokeColor=#36393d;" vertex="1" parent="dNxyNK7c78bLwvsdeMH5-20">
+          <mxGeometry x="470" y="90" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="dNxyNK7c78bLwvsdeMH5-21" value="ATM 2" style="swimlane;html=1;startSize=20;horizontal=0;" parent="dNxyNK7c78bLwvsdeMH5-19" vertex="1">
+          <mxGeometry x="20" y="140" width="980" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-51" value="" style="endArrow=none;dashed=1;html=1;" edge="1" parent="dNxyNK7c78bLwvsdeMH5-21">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="220" y="360" as="sourcePoint" />
+            <mxPoint x="220" y="-120" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-55" value="Whats balance in account 1?" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;align=center;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="dNxyNK7c78bLwvsdeMH5-21">
+          <mxGeometry x="240" y="40" width="80" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-59" value="&lt;b&gt;&lt;font color=&quot;#ff261f&quot;&gt;Reader acc1&lt;/font&gt;&lt;/b&gt;" style="text;html=1;strokeColor=#d6b656;fillColor=#fff2cc;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="dNxyNK7c78bLwvsdeMH5-21">
+          <mxGeometry x="220" width="120" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-60" value="" style="endArrow=none;dashed=1;html=1;" edge="1" parent="dNxyNK7c78bLwvsdeMH5-21">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="340" y="360" as="sourcePoint" />
+            <mxPoint x="340" y="-120" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-66" value="" style="endArrow=none;dashed=1;html=1;" edge="1" parent="dNxyNK7c78bLwvsdeMH5-21">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="580" y="360" as="sourcePoint" />
+            <mxPoint x="580" y="-140" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-42" value="ATM 3" style="swimlane;html=1;startSize=20;horizontal=0;" vertex="1" parent="dNxyNK7c78bLwvsdeMH5-19">
+          <mxGeometry x="20" y="260" width="980" height="120" as="geometry">
+            <mxRectangle x="20" y="240" width="430" height="20" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-56" value="open account 2" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="QNpvPXWWwWXRk5l0XYyx-42">
+          <mxGeometry x="250" y="40" width="50" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-57" value="&lt;font color=&quot;#0000e3&quot;&gt;&lt;b&gt;Writer acc2&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="QNpvPXWWwWXRk5l0XYyx-42">
+          <mxGeometry x="220" width="120" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-99" value="" style="endArrow=none;dashed=1;html=1;" edge="1" parent="QNpvPXWWwWXRk5l0XYyx-42">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="700" y="240" as="sourcePoint" />
+            <mxPoint x="700" y="-260" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-116" value="open account 3" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="QNpvPXWWwWXRk5l0XYyx-42">
+          <mxGeometry x="400" y="35" width="120" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-118" value="&lt;font color=&quot;#0000e3&quot;&gt;&lt;b&gt;Writer acc3&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="QNpvPXWWwWXRk5l0XYyx-42">
+          <mxGeometry x="390" width="120" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="dNxyNK7c78bLwvsdeMH5-22" value="GOVE AMLOT" style="swimlane;html=1;startSize=20;horizontal=0;" parent="dNxyNK7c78bLwvsdeMH5-19" vertex="1">
+          <mxGeometry x="20" y="380" width="980" height="120" as="geometry">
+            <mxRectangle x="20" y="240" width="430" height="20" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-101" value="-random- take amlot from all" style="whiteSpace=wrap;html=1;aspect=fixed;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;" vertex="1" parent="dNxyNK7c78bLwvsdeMH5-22">
+          <mxGeometry x="590" y="30" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-22" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="70" y="750" width="440" height="290" as="geometry" />
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-24" value="&lt;h1&gt;&lt;span&gt;Bankdata&lt;/span&gt;&lt;/h1&gt;&lt;h1&gt;&lt;span style=&quot;font-size: 12px ; font-weight: 400&quot;&gt;class made out of a map :&lt;/span&gt;&lt;/h1&gt;&lt;div&gt;&lt;span style=&quot;font-size: 12px ; font-weight: 400&quot;&gt;bank[accountnumber] will get an account class containing password number and balance&amp;nbsp;&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="130" y="770" width="330" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-26" value="Account 1: 1826&lt;br&gt;password: 12332&lt;br&gt;balance : 70" style="whiteSpace=wrap;html=1;aspect=fixed;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="80" y="920" width="100" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-29" value="Account 2: 1766&lt;br&gt;password: 2345&lt;br&gt;balance : 0" style="whiteSpace=wrap;html=1;aspect=fixed;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="210" y="920" width="100" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-30" value="Account 1: 1826&lt;br&gt;password: 12332&lt;br&gt;balance : 70" style="whiteSpace=wrap;html=1;aspect=fixed;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="340" y="920" width="100" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-31" value="&lt;b&gt;&lt;font color=&quot;#38ff3f&quot;&gt;Account class&lt;/font&gt;&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="80" y="900" width="100" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-32" value="&lt;b&gt;&lt;font color=&quot;#38ff3f&quot;&gt;Account class&lt;/font&gt;&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="210" y="900" width="100" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-33" value="&lt;b&gt;&lt;font color=&quot;#38ff3f&quot;&gt;Account class&lt;/font&gt;&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="340" y="900" width="100" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-61" value="&lt;font style=&quot;font-size: 15px&quot;&gt;&lt;b&gt;Transfer from 1 to 2&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="480" y="100" width="240" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-97" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.55;exitY=0.95;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="QNpvPXWWwWXRk5l0XYyx-95" target="QNpvPXWWwWXRk5l0XYyx-67">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="720" y="130" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-95" value="לסנכרן ביניהם?&lt;br&gt;להפוך לאחד?" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;fillColor=#cdeb8b;strokeColor=#36393d;" vertex="1" parent="1">
+          <mxGeometry x="540" y="10" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-98" value="&lt;ul&gt;&lt;li&gt;אסור להכנס למינוס&lt;/li&gt;&lt;li&gt;זה בסדר להתעכב ב&quot;תמונת מסך&quot;&amp;nbsp; של החשבונות&lt;/li&gt;&lt;/ul&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#36393d;" vertex="1" parent="1">
+          <mxGeometry x="810" y="730" width="400" height="450" as="geometry" />
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-102" value="מקביליות מרבית :&amp;nbsp;&lt;br&gt;אפשר ליצור חוטי קורא.כותב &lt;br&gt;עבור כל חשבון בנוסף לחוטים עבור ישויות" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;fillColor=#ffff88;strokeColor=#36393d;" vertex="1" parent="1">
+          <mxGeometry x="140" y="20" width="270" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-103" value="כל פעולה&amp;nbsp;&lt;br&gt;לוקחת שנייה" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0050ef;strokeColor=#001DBC;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="140" y="650" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-104" value="" style="endArrow=classic;html=1;" edge="1" parent="1" source="QNpvPXWWwWXRk5l0XYyx-103">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="560" y="640" as="sourcePoint" />
+            <mxPoint x="240" y="620" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-105" value="" style="endArrow=classic;html=1;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="239.99971965551924" y="662.6204906028415" as="sourcePoint" />
+            <mxPoint x="368.64" y="620" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-106" value="" style="endArrow=classic;html=1;exitX=0.958;exitY=0.325;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="QNpvPXWWwWXRk5l0XYyx-103">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="241.35971965551926" y="672.6204906028415" as="sourcePoint" />
+            <mxPoint x="480" y="620" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-107" value="" style="endArrow=classic;html=1;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="259.99971965551913" y="692.6204906028415" as="sourcePoint" />
+            <mxPoint x="600" y="620" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-108" value="זמן לפעולת כספומט&lt;br&gt;&amp;nbsp;כל 100 מילישנייות" style="ellipse;whiteSpace=wrap;html=1;fillColor=#6a00ff;strokeColor=#3700CC;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="-110" y="414" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-109" value="" style="endArrow=classic;html=1;entryX=-0.002;entryY=0.367;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="QNpvPXWWwWXRk5l0XYyx-108" target="dNxyNK7c78bLwvsdeMH5-21">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-40" y="414" as="sourcePoint" />
+            <mxPoint x="10" y="364" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="50" y="360" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-110" value="" style="endArrow=classic;html=1;exitX=0.942;exitY=0.288;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="QNpvPXWWwWXRk5l0XYyx-108" target="QNpvPXWWwWXRk5l0XYyx-42">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-40" y="531" as="sourcePoint" />
+            <mxPoint x="140.00000000000045" y="377" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-114" value="זמן לפעולת בנק:&lt;br&gt;כל שלוש שניות" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1ba1e2;strokeColor=#006EAF;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="-100" y="540" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-115" value="" style="endArrow=classic;html=1;exitX=0.992;exitY=0.613;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="QNpvPXWWwWXRk5l0XYyx-114" target="dNxyNK7c78bLwvsdeMH5-22">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="560" y="580" as="sourcePoint" />
+            <mxPoint x="610" y="530" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="QNpvPXWWwWXRk5l0XYyx-119" value="" style="endArrow=classic;html=1;entryX=0.017;entryY=0.164;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" target="dNxyNK7c78bLwvsdeMH5-19">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-30" y="424" as="sourcePoint" />
+            <mxPoint x="148.03999999999996" y="314.03999999999996" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
