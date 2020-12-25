@@ -36,7 +36,7 @@ BankData::BankData()
     { 
         cerr << "mutex init has failed" << endl;
         //TODO any last words?
-        exit(1);
+        //exit(1);
     } 
 
     ATMcounter = 1;
@@ -70,6 +70,7 @@ BankData::~BankData()
 {
 
 }
+<<<<<<< HEAD
 
 ATM::ATM(char *argv,int id)
 {
@@ -77,3 +78,5 @@ ATM::ATM(char *argv,int id)
     command = tmp;
     Id = id;
 }
+=======
+>>>>>>> master

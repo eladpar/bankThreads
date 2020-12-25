@@ -9,12 +9,13 @@
 #define lock pthread_mutex_lock
 #define unlock pthread_mutex_unlock
 
-#define NumATM 1
 
 using namespace std;
 /* Global Variables */
 BankData Bank;
 
+
+pthread_t *threads;
 void *ReadInput(void *atm_tmp)
 {
     //*((string*)thread_file)
@@ -29,6 +30,7 @@ void *ReadInput(void *atm_tmp)
         // File doesn't exist or some other error
         cerr << "illegal arguments" << endl;
         //TODO any last words?
+	free(threads);
         exit(1);
     }
     if (file.is_open())
@@ -60,8 +62,16 @@ void *ReadInput(void *atm_tmp)
                 else
                 {
                     cerr << "Account: " << AccNum << " alreasdy exits" << endl; //TODO SAVE TO LOG
+                    //continue;
                 }
                 unlock(&Bank.list_lock);
+
+                Account temp_account(atoi(AccountNumber.c_str()), atoi(Password.c_str()), atoi(Amount.c_str()));
+                //
+                //Bank.accounts.insert <pair> account.id account
+
+
+
             }
             else if (Action == "D") //deposit
             {
@@ -108,7 +118,7 @@ int main(int argc, char **argv)
 {
     if (argc < 3) cerr << "illegal arguments" << endl;
     freopen( "log.txt", "w", stderr );
-    //int NumATM = atoi(argv[1]);
+    int NumATM = atoi(argv[1]);
     //int *ptr[NumATM];
     vector <ATM> ATM_vector;
     int ATMid = 1;
@@ -121,6 +131,8 @@ int main(int argc, char **argv)
     }
 
     pthread_t threads[NumATM]; // TODO malloc?
+    threads = (pthread_t*)malloc(sizeof(pthread_t) * NumATM);
+    //pthread_t threads[NumATM]; // TODO malloc?
     int rc,t;
     for (t = 0; t < NumATM; t++)
     {
@@ -129,6 +141,7 @@ int main(int argc, char **argv)
         {
             cerr << "ERROR; return code from pthread_create() is " << rc << endl;
             //TODO any last words?
+	    free(threads);
             exit(-1);
         }
         
@@ -142,11 +155,14 @@ int main(int argc, char **argv)
         catch(const std::exception& e)
         {
             cerr << "Caught" <<  e.what() << '\n';
+	    //TODO any last words?
+	    free(threads);
         }
         
         
     }
     
-    
+   //TODO any last words?
+	free(threads); 
     exit(0);
 }
