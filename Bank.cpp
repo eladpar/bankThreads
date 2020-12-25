@@ -60,8 +60,16 @@ void *ReadInput(void *thread_file)
                 else
                 {
                     cerr << "Account: " << AccNum << " alreasdy exits" << endl; //TODO SAVE TO LOG
+                    //continue;
                 }
                 unlock(&Bank.list_lock);
+
+                Account temp_account(atoi(AccountNumber.c_str()), atoi(Password.c_str()), atoi(Amount.c_str()));
+                //
+                //Bank.accounts.insert <pair> account.id account
+
+
+
             }
             else if (Action == "D") //deposit
             {
