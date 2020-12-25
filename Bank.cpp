@@ -11,7 +11,11 @@ using namespace std;
 
 void *ReadInput(void *thread_file)
 {
-    string input_file = *((string*)thread_file);
+    //*((string*)thread_file)
+    //int input_file = *((int*)thread_file);
+
+    char* input_file_temp = *((char**)thread_file);
+    string input_file(input_file_temp);
     ifstream file(input_file);
     string line;
     if (!file || !file.good()) 
@@ -54,15 +58,12 @@ int main(int argc, char **argv)
     if (argc < 3) cerr << "illegal arguments" << endl;
 
     //int NumATM = atoi(argv[1]);
-    //int NumATM = 2;
-    //pthreds_create (1->3)
-    int counter =0;
     //int *ptr[NumATM];
     pthread_t threads[NumATM]; // TODO malloc?
     int rc,t;
     for (t = 0; t < NumATM; t++)
     {
-        rc = pthread_create(&threads[t], NULL, ReadInput, (void*)argv[t+2]);
+        rc = pthread_create(&threads[t], NULL, ReadInput, (void*)&argv[t+2]);
         if (rc)
         {
             cerr << "ERROR; return code from pthread_create() is " << rc << endl;
