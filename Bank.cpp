@@ -6,8 +6,14 @@
 #include <cstdlib>
 #include "BankData.hpp"
 
+#define lock pthread_mutex_lock
+#define unlock pthread_mutex_unlock
+
 #define NumATM 2
+
 using namespace std;
+/* Global Variables */
+BankData Bank;
 
 void *ReadInput(void *thread_file)
 {
@@ -38,8 +44,53 @@ void *ReadInput(void *thread_file)
             line.erase(0, line.find(delimiter) + delimiter.length());
             string Amount = line.substr(0, line.find(delimiter)); 
             
+            //TODO sleep(1)
+
+             cout << "Action is : " << Action << " Account Number is: " << AccountNumber 
+                                << " Password is: " << Password << " Amount is: " << Amount << endl;
+            if (Action == "O") //open account // 
+            {
+                int AccNum = stoi(AccountNumber);
+
+                lock(&Bank.list_lock);
+                if(Bank.CheckList(AccNum) == false)
+                {
+                    Bank.AccountList.push_back(AccNum);
+                }
+                else
+                {
+                    cerr << "Account: " << AccNum << " alreasdy exits" << endl; //TODO SAVE TO LOG
+                }
+                unlock(&Bank.list_lock);
+            }
+            else if (Action == "D") //deposit
+            {
+                /* code */
+            }
+            else if (Action == "W") // withdraw
+            {
+                /* code */
+            }
+            else if (Action == "B") // balance
+            {
+                /* code */
+            }
+            else if (Action == "T") // transfer
+            {
+                /* code */
+            }
+            else if (Action == "Q") // quit account
+            {
+                /* code */
+            }
+            else
+            {
+                cerr << "No Such Action " << Action << endl;
+            }
+            
+
             //Account temp_account(atoi(AccountNumber.c_str()), atoi())
-            cout << "Action is : " << Action << " Account Number is: " << AccountNumber << " Password is: " << Password << " Amount is: " << Amount << endl;
+           
         }
         file.close();
     }
@@ -56,9 +107,10 @@ void *ReadInput(void *thread_file)
 int main(int argc, char **argv)
 {
     if (argc < 3) cerr << "illegal arguments" << endl;
-
+    freopen( "log.txt", "w", stderr );
     //int NumATM = atoi(argv[1]);
     //int *ptr[NumATM];
+
     pthread_t threads[NumATM]; // TODO malloc?
     int rc,t;
     for (t = 0; t < NumATM; t++)

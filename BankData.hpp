@@ -6,6 +6,7 @@
 #include <vector> 
 #include <map> 
 #include <iterator> 
+#include <algorithm>
 
 using namespace std;
 
@@ -38,10 +39,22 @@ class Account
 class BankData  
 {
 	private:
-		map <int , Account> Accounts;
+		
 	public:
-
+		/* Constructor */
 		BankData();
+
+		/* Variables */
+		map <int , Account> Accounts;
+		list <int> AccountList;
+		pthread_mutex_t list_lock;
+
+		/* Getters */
+		bool CheckList(int AccountNumber);
+		
+		/* Setters */
+
+		/* Destructor */
 		~BankData();
 
 };
