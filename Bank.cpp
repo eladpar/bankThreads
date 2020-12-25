@@ -9,12 +9,11 @@
 #define lock pthread_mutex_lock
 #define unlock pthread_mutex_unlock
 
-#define NumATM 2
 
 using namespace std;
 /* Global Variables */
 BankData Bank;
-
+pthread_t *threads;
 void *ReadInput(void *thread_file)
 {
     //*((string*)thread_file)
@@ -29,6 +28,7 @@ void *ReadInput(void *thread_file)
         // File doesn't exist or some other error
         cerr << "illegal arguments" << endl;
         //TODO any last words?
+	free(threads);
         exit(1);
     }
     if (file.is_open())
@@ -108,10 +108,10 @@ int main(int argc, char **argv)
 {
     if (argc < 3) cerr << "illegal arguments" << endl;
     freopen( "log.txt", "w", stderr );
-    //int NumATM = atoi(argv[1]);
+    int NumATM = atoi(argv[1]);
     //int *ptr[NumATM];
-
-    pthread_t threads[NumATM]; // TODO malloc?
+    threads = (pthread_t*)malloc(sizeof(pthread_t) * NumATM);
+    //pthread_t threads[NumATM]; // TODO malloc?
     int rc,t;
     for (t = 0; t < NumATM; t++)
     {
@@ -120,11 +120,11 @@ int main(int argc, char **argv)
         {
             cerr << "ERROR; return code from pthread_create() is " << rc << endl;
             //TODO any last words?
+	    free(threads);
             exit(-1);
         }
         
     }
-cerr << "hre"<<endl;
     for (int i = 0; i < NumATM; i++)
     {
         try
@@ -134,11 +134,14 @@ cerr << "hre"<<endl;
         catch(const std::exception& e)
         {
             cerr << "Caught" <<  e.what() << '\n';
+	    //TODO any last words?
+	    free(threads);
         }
         
         
     }
     
-    
+   //TODO any last words?
+	free(threads); 
     exit(0);
 }
