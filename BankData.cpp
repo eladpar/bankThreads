@@ -38,6 +38,8 @@ BankData::BankData()
         //TODO any last words?
         exit(1);
     } 
+
+    ATMcounter = 1;
 }
 
 bool BankData::CheckList(int AccountNumber)
@@ -54,7 +56,24 @@ bool BankData::CheckList(int AccountNumber)
     
 }
 
+int BankData::get_ATMcounter()
+{
+    return ATMcounter;
+}
+
+void BankData::promote_ATMcounter()
+{
+    ATMcounter++;
+}
+
 BankData::~BankData()
 {
 
+}
+
+ATM::ATM(char *argv,int id)
+{
+    string tmp(argv);
+    command = tmp;
+    Id = id;
 }

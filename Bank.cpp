@@ -9,20 +9,20 @@
 #define lock pthread_mutex_lock
 #define unlock pthread_mutex_unlock
 
-#define NumATM 2
+#define NumATM 1
 
 using namespace std;
 /* Global Variables */
 BankData Bank;
 
-void *ReadInput(void *thread_file)
+void *ReadInput(void *atm_tmp)
 {
     //*((string*)thread_file)
     //int input_file = *((int*)thread_file);
 
-    char* input_file_temp = *((char**)thread_file);
-    string input_file(input_file_temp);
-    ifstream file(input_file);
+    //char* input_file_temp = *((char**)thread_file);
+    ATM atm = *((ATM*)atm_tmp);
+    ifstream file(atm.command);
     string line;
     if (!file || !file.good()) 
     {
@@ -110,12 +110,21 @@ int main(int argc, char **argv)
     freopen( "log.txt", "w", stderr );
     //int NumATM = atoi(argv[1]);
     //int *ptr[NumATM];
+    vector <ATM> ATM_vector;
+    int ATMid = 1;
+    cout << "argv[0] is: " << argv[0] << "argv[1] is: " << argv[1] << "argv[2] is: " << argv[2] << endl;
+    for( int t = 0; t < NumATM; t++)
+    {
+        ATM tmp(argv[t+2],ATMid);
+        ATM_vector.push_back(tmp);
+        ATMid++;
+    }
 
     pthread_t threads[NumATM]; // TODO malloc?
     int rc,t;
     for (t = 0; t < NumATM; t++)
     {
-        rc = pthread_create(&threads[t], NULL, ReadInput, (void*)&argv[t+2]);
+        rc = pthread_create(&threads[t], NULL, ReadInput, (void*)&ATM_vector[t]);
         if (rc)
         {
             cerr << "ERROR; return code from pthread_create() is " << rc << endl;
@@ -124,7 +133,6 @@ int main(int argc, char **argv)
         }
         
     }
-cerr << "hre"<<endl;
     for (int i = 0; i < NumATM; i++)
     {
         try

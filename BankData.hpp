@@ -7,7 +7,6 @@
 #include <map> 
 #include <iterator> 
 #include <algorithm>
-
 using namespace std;
 
 class Account 
@@ -39,6 +38,7 @@ class Account
 class BankData  
 {
 	private:
+		int ATMcounter;
 		
 	public:
 		/* Constructor */
@@ -51,10 +51,35 @@ class BankData
 
 		/* Getters */
 		bool CheckList(int AccountNumber);
-		
+		int get_ATMcounter();
 		/* Setters */
+		void promote_ATMcounter();
 
 		/* Destructor */
 		~BankData();
+
+};
+
+class ATM  
+{
+	private:
+		
+	public:
+		/* Constructor */
+		ATM(char *argv,int id);
+
+		/* Variables */
+		int Id;
+		string command;
+
+		/* Printers */
+		//void printer_AccNumberIsTaken(); 
+		//void printer_AccOpenSucceeded(int id,int password,int balance);
+
+		/* Destructor */
+		~ATM(){};
+
+
+
 
 };
