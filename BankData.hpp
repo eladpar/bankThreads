@@ -16,8 +16,7 @@ using namespace std;
 class Account 
 {
 	private:
-		sem_t wrt_lock;
-		sem_t rd_lock;
+
 		int id;
 		int password;
 		int balance;
@@ -45,6 +44,9 @@ class Account
 		void setId(int id_);
 		void setPassword(int password_);
 		void setBalance(int balance_);
+	
+	sem_t wrt_lock;
+	sem_t rd_lock;
 		
 		~Account(){};
 

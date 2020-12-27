@@ -8,7 +8,7 @@
 
 #define lock pthread_mutex_lock
 #define unlock pthread_mutex_unlock
-
+#define Acc Bank.Accounts.at(AccountNumber) 
 
 using namespace std;
 /* Global Variables */
@@ -81,11 +81,77 @@ void *ReadInput(void *atm_tmp)
             }
             else if (Action == "D") //deposit
             {
-                /* code */
+                try 
+                {
+                    down(&Acc.wrt_lock);
+                    if(Password != Acc.getPassword())
+                    {
+                        throw(1);
+                    }
+                    Acc.setBalance(Acc.getBalance()+Amount);
+                    throw(3);
+
+                    up(&Acc.wrt_lock);
+
+                }
+                catch(int a)
+                {
+                    up(&Acc.wrt_lock);
+                    if (a==1)
+                    {
+                        cerr << "Error " << atm.Id << ": Your transaction failed – password for account id " << Acc.getId()  << " is incorrect" << endl;
+                    }
+
+                    else if(a==3)
+                    {
+                        cerr << atm.Id << ": Account " << Acc.getId() << " new balance is " << Acc.getBalance() << " after " << Amount << " $ was deposited " << endl;
+                    }
+                }
+                catch(...)
+                {
+                    cerr << "Error " << atm.Id << ": Your transaction failed – account id " << AccountNumber << " does not exist" << endl;
+                }
             }
             else if (Action == "W") // withdraw
             {
-                /* code */
+                try 
+                {
+                    down(&Acc.wrt_lock);
+                    if(Password != Acc.getPassword())
+                    {
+                        throw(1);
+                    }
+                    if(Amount > Acc.getBalance())
+                    {
+                        throw(2);
+                    }
+                    Acc.setBalance(Acc.getBalance()-Amount);
+                    throw(3);
+
+                    up(&Acc.wrt_lock);
+
+                }
+                catch(int a)
+                {
+                    up(&Acc.wrt_lock);
+                    if (a==1)
+                    {
+                        cerr << "Error " << atm.Id << " Your transaction failed – password for account id " << Acc.getId()  << " is incorrect" << endl;
+
+                    }
+                    else if(a==2)
+                    {
+                        cerr << "Error " << atm.Id << " Your transaction failed – account id " << Acc.getId()  << " balance is lower than " << Amount << endl;
+                    }
+                    else if(a==3)
+                    {
+                        cerr << atm.Id << ": Account " << Acc.getId() << " new balance is " << Acc.getBalance() << " after " << Amount << " $ was withdrew " << endl;
+                    }
+                }
+                catch(...)
+                {
+                    cerr << "Error " << atm.Id << ": Your transaction failed – account id " << AccountNumber << " does not exist" << endl;
+                }
             }
             else if (Action == "B") // balance
             {
@@ -94,7 +160,8 @@ void *ReadInput(void *atm_tmp)
             }
             else if (Action == "T") // transfer
             {
-                /* code */
+                
+
             }
             else if (Action == "Q") // quit account
             {
