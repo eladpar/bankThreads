@@ -1,5 +1,0 @@
-Error 2: Your transaction failed – account id 12345 does not exist
-Error 2: Your transaction failed – account id 12345 does not exist
-Error 2: Your transaction failed – account id 12345 does not exist
-1: New account id is 12345 with password 1234 and initial balance 45
-1: Account 12345 balance is 45
