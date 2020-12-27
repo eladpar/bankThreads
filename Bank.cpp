@@ -96,7 +96,6 @@ void *ReadInput(void *atm_tmp)
                 }
                 catch(int a)
                 {
-                    up(&Acc.wrt_lock);
                     if (a==1)
                     {
                         cerr << "Error " << atm.Id << ": Your transaction failed – password for account id " << Acc.getId()  << " is incorrect" << endl;
@@ -106,6 +105,8 @@ void *ReadInput(void *atm_tmp)
                     {
                         cerr << atm.Id << ": Account " << Acc.getId() << " new balance is " << Acc.getBalance() << " after " << Amount << " $ was deposited " << endl;
                     }
+                    up(&Acc.wrt_lock);
+
                 }
                 catch(...)
                 {
@@ -133,7 +134,7 @@ void *ReadInput(void *atm_tmp)
                 }
                 catch(int a)
                 {
-                    up(&Acc.wrt_lock);
+
                     if (a==1)
                     {
                         cerr << "Error " << atm.Id << " Your transaction failed – password for account id " << Acc.getId()  << " is incorrect" << endl;
@@ -147,6 +148,7 @@ void *ReadInput(void *atm_tmp)
                     {
                         cerr << atm.Id << ": Account " << Acc.getId() << " new balance is " << Acc.getBalance() << " after " << Amount << " $ was withdrew " << endl;
                     }
+                    up(&Acc.wrt_lock);
                 }
                 catch(...)
                 {
@@ -190,6 +192,19 @@ void *ReadInput(void *atm_tmp)
             }
             else if (Action == "T") // transfer
             {
+                // line.erase(0, line.find(delimiter) + delimiter.length());
+                // string The_Real_Amount_ = line.substr(0, line.find(delimiter)); 
+                // int target_amount = Amount;
+                // Amount = stoi(The_Real_Amount_);
+
+                // try
+                // {
+                //     down()
+                // }
+                // catch(const std::exception& e)
+                // {
+                //     std::cerr << e.what() << '\n';
+                // }
                 
 
             }
@@ -223,9 +238,7 @@ void *ReadInput(void *atm_tmp)
                 cerr << "No Such Action " << Action << endl;
             }
             
-
             //Account temp_account(atoi(AccountNumber.c_str()), atoi())
-           
         }
         file.close();
     }
