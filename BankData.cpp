@@ -70,7 +70,6 @@ BankData::~BankData()
 {
 
 }
-<<<<<<< HEAD
 
 ATM::ATM(char *argv,int id)
 {
@@ -78,5 +77,3 @@ ATM::ATM(char *argv,int id)
     command = tmp;
     Id = id;
 }
-=======
->>>>>>> master

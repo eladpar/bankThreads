@@ -66,11 +66,14 @@ void *ReadInput(void *atm_tmp)
                 }
                 unlock(&Bank.list_lock);
 
+                //sem init(sem 0);
                 Account temp_account(atoi(AccountNumber.c_str()), atoi(Password.c_str()), atoi(Amount.c_str()));
                 //
                 //Bank.accounts.insert <pair> account.id account
 
+                //Bank.accounts.insert(pair<int, Account>(temp_account.AccountNumber, temp_account)); // TODO lock this 
 
+                    //account sem , id , pass
 
             }
             else if (Action == "D") //deposit
@@ -122,7 +125,6 @@ int main(int argc, char **argv)
     //int *ptr[NumATM];
     vector <ATM> ATM_vector;
     int ATMid = 1;
-    cout << "argv[0] is: " << argv[0] << "argv[1] is: " << argv[1] << "argv[2] is: " << argv[2] << endl;
     for( int t = 0; t < NumATM; t++)
     {
         ATM tmp(argv[t+2],ATMid);
@@ -130,7 +132,6 @@ int main(int argc, char **argv)
         ATMid++;
     }
 
-    pthread_t threads[NumATM]; // TODO malloc?
     threads = (pthread_t*)malloc(sizeof(pthread_t) * NumATM);
     //pthread_t threads[NumATM]; // TODO malloc?
     int rc,t;
