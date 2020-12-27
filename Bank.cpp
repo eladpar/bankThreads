@@ -40,26 +40,29 @@ void *ReadInput(void *atm_tmp)
             string delimiter = " ";
             string Action = line.substr(0, line.find(delimiter)); //searching for first delimiter and cutting string before
             line.erase(0, line.find(delimiter) + delimiter.length());
-            string AccountNumber = line.substr(0, line.find(delimiter)); 
+            string AccountNumber_ = line.substr(0, line.find(delimiter)); 
             line.erase(0, line.find(delimiter) + delimiter.length());
-            string Password = line.substr(0, line.find(delimiter)); 
+            string Password_ = line.substr(0, line.find(delimiter)); 
             line.erase(0, line.find(delimiter) + delimiter.length());
-            string Amount = line.substr(0, line.find(delimiter)); 
+            string Amount_ = line.substr(0, line.find(delimiter)); 
             
+            int AccountNumber = stoi(AccountNumber_);
+            int Password = stoi(Password_);
+            int Amount = stoi(Amount_);
+
             //TODO sleep(1)
 
              cout << "Action is : " << Action << " Account Number is: " << AccountNumber 
                                 << " Password is: " << Password << " Amount is: " << Amount << endl;
             if (Action == "O") //open account // 
             {
-                int AccNum = stoi(AccountNumber);
 
                 bool insert_flag =true;
 
                 lock(&Bank.list_lock);
-                if(Bank.CheckList(AccNum) == false)
+                if(Bank.CheckList(AccountNumber) == false)
                 {
-                    Bank.AccountList.push_back(AccNum);
+                    Bank.AccountList.push_back(AccountNumber);
                      cerr << atm.Id <<": New account id is "<< AccountNumber << " with password " 
                                                 << Password << " and initial balance " << Amount << endl;
                 }
@@ -72,7 +75,7 @@ void *ReadInput(void *atm_tmp)
 
                 if(insert_flag == true)
                 {
-                    Account temp_account(atoi(AccountNumber.c_str()), atoi(Password.c_str()), atoi(Amount.c_str()), 0);
+                    Account temp_account(AccountNumber, Password, Amount, 0);
                     Bank.Accounts.insert(pair<int, Account>(temp_account.getId(), temp_account)); // TODO lock this 
                 }
             }
@@ -86,7 +89,8 @@ void *ReadInput(void *atm_tmp)
             }
             else if (Action == "B") // balance
             {
-                
+                down(&Bank.Accounts.at(AccountNumber).rd_lock);
+               // Bank.Accounts.at()
             }
             else if (Action == "T") // transfer
             {
