@@ -70,7 +70,7 @@ class BankData
 		int get_ATMcounter();
 		/* Setters */
 		void promote_ATMcounter();
-
+		bool EraseList(int AccountNumber);
 		/* Destructor */
 		~BankData();
 
