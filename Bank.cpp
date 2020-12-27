@@ -8,7 +8,9 @@
 
 #define lock pthread_mutex_lock
 #define unlock pthread_mutex_unlock
-#define Acc Bank.Accounts.at(AccountNumber)
+#define Acc Bank.Accounts.at(AccountNumber) 
+#define TargetAcc Bank.Accounts.at(Target_Account) 
+
 
 using namespace std;
 /* Global Variables */
@@ -192,23 +194,67 @@ void *ReadInput(void *atm_tmp)
             }
             else if (Action == "T") // transfer
             {
-                // line.erase(0, line.find(delimiter) + delimiter.length());
-                // string The_Real_Amount_ = line.substr(0, line.find(delimiter)); 
-                // int target_amount = Amount;
-                // Amount = stoi(The_Real_Amount_);
+                line.erase(0, line.find(delimiter) + delimiter.length());
+                string The_Real_Amount_ = line.substr(0, line.find(delimiter)); 
+                int Target_Account = Amount;
+                Amount = stoi(The_Real_Amount_);
 
-                // try
-                // {
-                //     down()
-                // }
-                // catch(const std::exception& e)
-                // {
-                //     std::cerr << e.what() << '\n';
-                // }
-                
+                try
+                {
+                    down(&Acc.wrt_lock);
+                    if(Password != Acc.getPassword())
+                    {
+                        throw(1);
+                    }
+                    if(Amount > Acc.getBalance())
+                    {
+                        throw(2);
+                    }
+                    try
+                    {
+                        down(&TargetAcc.wrt_lock);
+                    }
+                    catch (...)
+                    {
+                        cerr << "Error " << atm.Id << ": Your transaction failed – account id " << Target_Account << " does not exist" << endl;
+                        up(&Acc.wrt_lock);
+
+                    }
+                    Acc.setBalance(Acc.getBalance()-Amount);
+                    TargetAcc.setBalance(TargetAcc.getBalance()+Amount);
+
+                    throw(3);
+
+                }
+
+                catch(int a)
+                {
+
+                    if (a==1)
+                    {
+                        cerr << "Error " << atm.Id << " Your transaction failed – password for account id " << Acc.getId()  << " is incorrect" << endl;
+
+                    }
+                    else if(a==2)
+                    {
+                        cerr << "Error " << atm.Id << " Your transaction failed – account id " << Acc.getId()  << " balance is lower than " << Amount << endl;
+                    }
+                    else if(a==3)
+                    {
+                        cerr << atm.Id << ": Transfer " << Amount << " from account " << AccountNumber << " to account " << Target_Account 
+                        << " new account balance is " << Acc.getBalance() << " new target account balance is " << TargetAcc.getBalance() << endl;                    
+                    }
+                    up(&TargetAcc.wrt_lock);
+                    up(&Acc.wrt_lock);
+                }
+                catch(...)
+                {
+                    cerr << "Error " << atm.Id << ": Your transaction failed – account id " << AccountNumber << " does not exist" << endl;
+                }
 
             }
-            else if (Action == "Q"){ // quit account
+            else if (Action == "Q") // quit account
+            {}
             // {
                 
             //     bool insert_flag =true;
