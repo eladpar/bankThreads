@@ -63,8 +63,6 @@ void *ReadInput(void *atm_tmp)
                 if(Bank.CheckList(AccountNumber) == false)
                 {
                     Bank.AccountList.push_back(AccountNumber);
-                     cerr << atm.Id <<": New account id is "<< AccountNumber << " with password " 
-                                                << Password << " and initial balance " << Amount << endl;
                 }
                 else
                 {
@@ -76,7 +74,9 @@ void *ReadInput(void *atm_tmp)
                 if(insert_flag == true)
                 {
                     Account temp_account(AccountNumber, Password, Amount, 0);
-                    Bank.Accounts.insert(pair<int, Account>(temp_account.getId(), temp_account)); // TODO lock this 
+                    Bank.Accounts.insert(pair<int, Account>(temp_account.getId(), temp_account)); // TODO lock this ??
+                    cerr << atm.Id <<": New account id is "<< AccountNumber << " with password " 
+                            << Password << " and initial balance " << Amount << endl;
                 }
             }
             else if (Action == "D") //deposit
@@ -193,7 +193,7 @@ void *ReadInput(void *atm_tmp)
                 
 
             }
-            else if (Action == "Q") // quit account
+            else if (Action == "Q"){ // quit account
             // {
                 
             //     bool insert_flag =true;
@@ -217,7 +217,7 @@ void *ReadInput(void *atm_tmp)
             //         Account temp_account(AccountNumber, Password, Amount, 0);
             //         Bank.Accounts.insert(pair<int, Account>(temp_account.getId(), temp_account)); // TODO lock this 
             //     }
-            // }
+            }
             else
             {
                 cerr << "No Such Action " << Action << endl;
