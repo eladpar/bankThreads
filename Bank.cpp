@@ -8,7 +8,7 @@
 
 #define lock pthread_mutex_lock
 #define unlock pthread_mutex_unlock
-
+#define Acc Bank.Accounts.at(AccountNumber)
 
 using namespace std;
 /* Global Variables */
@@ -89,8 +89,38 @@ void *ReadInput(void *atm_tmp)
             }
             else if (Action == "B") // balance
             {
-                down(&Bank.Accounts.at(AccountNumber).rd_lock);
-               // Bank.Accounts.at()
+                int curr_password;
+                int curr_balance;
+                bool no_acount = false;
+                try
+                {
+                    down(&Acc.rd_lock);
+                    Acc.rd_count++;
+                    if (Acc.rd_count == 1)
+                        down(&Acc.wrt_lock);
+                    up(&Acc.rd_lock);
+                    curr_password = Acc.getPassword();
+                    curr_balance = Acc.getBalance();
+                    down(&Acc.rd_lock);
+                    Acc.rd_count--;
+                    if (Acc.rd_count == 0)
+                        up(&Acc.wrt_lock);
+                    up(&Acc.rd_lock);
+                }
+                catch (...)
+                {
+                    cerr << "Error " << atm.Id <<": Your transaction failed – account id " << AccountNumber << " does not exist" << endl;
+                    no_acount = true;
+                }
+
+                if ( (Password != curr_password) && (no_acount == false))
+                {
+                    cerr << "Error "<< atm.Id << ": Your transaction failed – password for account id " << AccountNumber << " is incorrect" << endl;
+                }
+                else if ( (Password == curr_password) && (no_acount == false))
+                {
+                    cerr << atm.Id << ": Account " << AccountNumber << " balance is " << curr_balance << endl;
+                }
             }
             else if (Action == "T") // transfer
             {

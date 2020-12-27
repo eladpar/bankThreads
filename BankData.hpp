@@ -16,13 +16,13 @@ using namespace std;
 class Account 
 {
 	private:
-		sem_t wrt_lock;
-		sem_t rd_lock;
 		int id;
 		int password;
 		int balance;
-		int rd_count;
 	public:
+		int rd_count;
+		sem_t wrt_lock;
+		sem_t rd_lock;
 	// add write lock and read lock
 		Account(int id_=0, int password_=0, int balance_=0, int rd_count_ =0):
 			id(id_), password(password_), balance(balance_), rd_count(rd_count_) 
