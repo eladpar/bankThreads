@@ -214,9 +214,9 @@ void *ReadInput(void *atm_tmp)
             //     bool insert_flag =true;
 
             //     lock(&Bank.list_lock);
-            //     if(Bank.EraseList(AccountNumber) == true)
+            //     if(Bank.EraseList(AccountNumber) == False)
             //     {
-
+            //         cerr << "Error " << atm.Id <<": Your transaction failed – account with the same id exists" << endl; //TODO SAVE TO LOG
             //          /* cerr << atm.Id << ": Account " << AccountNumber <<
             //                         " is now closed. Balance was " << <bal> << endl; */
             //     }
@@ -232,7 +232,7 @@ void *ReadInput(void *atm_tmp)
             //         Account temp_account(AccountNumber, Password, Amount, 0);
             //         Bank.Accounts.insert(pair<int, Account>(temp_account.getId(), temp_account)); // TODO lock this 
             //     }
-            }
+            // }
             else
             {
                 cerr << "No Such Action " << Action << endl;
