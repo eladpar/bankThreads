@@ -54,27 +54,27 @@ void *ReadInput(void *atm_tmp)
             {
                 int AccNum = stoi(AccountNumber);
 
+                bool insert_flag =true;
+
                 lock(&Bank.list_lock);
                 if(Bank.CheckList(AccNum) == false)
                 {
                     Bank.AccountList.push_back(AccNum);
+                     cerr << atm.Id <<": New account id is "<< AccountNumber << " with password " 
+                                                << Password << " and initial balance " << Amount << endl;
                 }
                 else
                 {
-                    cerr << "Account: " << AccNum << " alreasdy exits" << endl; //TODO SAVE TO LOG
-                    //continue;
+                    cerr << "Error " << atm.Id <<": Your transaction failed – account with the same id exists" << endl; //TODO SAVE TO LOG
+                    insert_flag = false;
                 }
                 unlock(&Bank.list_lock);
 
-                //sem init(sem 0);
-                Account temp_account(atoi(AccountNumber.c_str()), atoi(Password.c_str()), atoi(Amount.c_str()));
-                //
-                //Bank.accounts.insert <pair> account.id account
-
-                //Bank.accounts.insert(pair<int, Account>(temp_account.AccountNumber, temp_account)); // TODO lock this 
-
-                    //account sem , id , pass
-
+                if(insert_flag == true)
+                {
+                    Account temp_account(atoi(AccountNumber.c_str()), atoi(Password.c_str()), atoi(Amount.c_str()), 0);
+                    Bank.Accounts.insert(pair<int, Account>(temp_account.getId(), temp_account)); // TODO lock this 
+                }
             }
             else if (Action == "D") //deposit
             {
@@ -86,7 +86,7 @@ void *ReadInput(void *atm_tmp)
             }
             else if (Action == "B") // balance
             {
-                /* code */
+                
             }
             else if (Action == "T") // transfer
             {
