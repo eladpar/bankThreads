@@ -66,6 +66,7 @@ class BankData
 		list <int> AccountList;
 		pthread_mutex_t list_lock;
 
+		pthread_mutex_t log_lock;
 		/* Getters */
 		bool CheckList(int AccountNumber);
 		int get_ATMcounter();
