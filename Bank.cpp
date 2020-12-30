@@ -105,9 +105,8 @@ void *ReadInput(void *atm_tmp)
                                 << " Password is: " << Password << " Amount is: " << Amount << endl;
             if (Action == "O") //open account // 
             {
-
-            cerr << "Error " << atm.Id <<": Your transaction failed – account with the same id exists" << endl; //TODO SAVE TO LOG
-
+                
+            
             Account temp_account(AccountNumber, Password, Amount, 0);
             Bank.Accounts.insert(pair<int, Account>(temp_account.getId(), temp_account)); // TODO lock this ??
             cerr << atm.Id <<": New account id is "<< AccountNumber << " with password " 
@@ -116,19 +115,28 @@ void *ReadInput(void *atm_tmp)
             }
             else if (Action == "D") //deposit
             {
-
-                down(&Bank.rd_lock); //
+                /* Open of bank reader lock */
+                down(&Bank.rd_lock);
+                    Bank.rd_count++;
+                    if (Bank.rd_count == 1)
+                        down(&Bank.wrt_lock);
+                    up(&Bank.rd_lock);
 
                 if(ACCOUNT_DOESNT_EXIST)
                 {
-                   up(&Bank.rd_lock); //
+                   up(&Bank.rd_lock); // TODO hana
                     continue;
                 }
                             
                 down(&Acc.wrt_lock);
-                up(&Bank.rd_lock); //
 
- 
+                /* Close of bank reader lock*/
+                down(&Bank.rd_lock);
+                Bank.rd_count--;
+                if (Bank.rd_count == 0)
+                    up(&Bank.wrt_lock);
+                up(&Bank.rd_lock);
+
                 
                 Acc.setBalance(Acc.getBalance()+Amount);
                 lock(&Bank.log_lock); //
