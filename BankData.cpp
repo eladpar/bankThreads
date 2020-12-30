@@ -32,10 +32,63 @@ void Account::setBalance(int balance_)
 
 BankData::BankData()
 {
+    if (pthread_mutex_init(&list_lock, NULL) != 0) 
+    { 
+        cerr << "mutex init has failed" << endl;
+        //TODO any last words?
+        //exit(1);
+    } 
 
+    ATMcounter = 1;
+}
+
+bool BankData::CheckList(int AccountNumber)
+{
+    list<int>::iterator it = find(AccountList.begin(), AccountList.end(), AccountNumber); 
+    if (it == AccountList.end()) 
+    { 
+        return false;
+    } 
+    else
+    {
+        return true;
+    }
+    
+}
+
+bool BankData::EraseList(int AccountNumber)
+{
+    list<int>::iterator it = find(AccountList.begin(), AccountList.end(), AccountNumber); 
+    if (it == AccountList.end()) 
+    { 
+        return false;
+    } 
+    else
+    {
+        AccountList.erase(it);
+        return true;
+    }
+    
+}
+
+int BankData::get_ATMcounter()
+{
+    return ATMcounter;
+}
+
+void BankData::promote_ATMcounter()
+{
+    ATMcounter++;
 }
 
 BankData::~BankData()
 {
 
+}
+
+ATM::ATM(char *argv,int id)
+{
+    string tmp(argv);
+    command = tmp;
+    Id = id;
 }
