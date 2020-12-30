@@ -63,10 +63,12 @@ class BankData
 
 		/* Variables */
 		map <int , Account> Accounts;
-		list <int> AccountList;
-		pthread_mutex_t list_lock;
-
 		pthread_mutex_t log_lock;
+
+		sem_t wrt_lock;
+		sem_t rd_lock;
+		int rd_count;
+		
 		/* Getters */
 		bool CheckList(int AccountNumber);
 		int get_ATMcounter();
