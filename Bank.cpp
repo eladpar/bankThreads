@@ -5,11 +5,18 @@
 #include <string>
 #include <cstdlib>
 #include "BankData.hpp"
+#include <unistd.h>
+
 
 #define lock pthread_mutex_lock
 #define unlock pthread_mutex_unlock
 #define Acc Bank.Accounts.at(AccountNumber) 
 #define TargetAcc Bank.Accounts.at(Target_Account) 
+
+#define WRONG_PASSWORD 1
+#define ILLEGAL_WITHDRAW 2
+#define SUCCESS 3
+#define ACCOUNT_DOESNT_EXIST 4
 
 
 using namespace std;
@@ -83,37 +90,29 @@ void *ReadInput(void *atm_tmp)
             }
             else if (Action == "D") //deposit
             {
-                try 
+
+                down(&Bank.rd_lock); //
+
+                if(ACCOUNT_DOESNT_EXIST)
                 {
-                    down(&Acc.wrt_lock);
-                    if(Password != Acc.getPassword())
-                    {
-                        throw(1);
-                    }
-                    Acc.setBalance(Acc.getBalance()+Amount);
-                    throw(3);
-
-                    up(&Acc.wrt_lock);
-
+                   up(&Bank.rd_lock); //
+                    continue;
                 }
-                catch(int a)
-                {
-                    if (a==1)
-                    {
-                        cerr << "Error " << atm.Id << ": Your transaction failed – password for account id " << Acc.getId()  << " is incorrect" << endl;
-                    }
+                            
+                down(&Acc.wrt_lock);
+                up(&Bank.rd_lock); //
 
-                    else if(a==3)
-                    {
-                        cerr << atm.Id << ": Account " << Acc.getId() << " new balance is " << Acc.getBalance() << " after " << Amount << " $ was deposited " << endl;
-                    }
-                    up(&Acc.wrt_lock);
+ 
+                
+                Acc.setBalance(Acc.getBalance()+Amount);
+                lock(&Bank.log_lock); //
+                cerr << atm.Id << ": Account " << Acc.getId() << " new balance is " << Acc.getBalance() << " after " << Amount << " $ was deposited " << endl;
+                unlock(&Bank.log_lock); //
+                up(&Acc.wrt_lock);
 
-                }
-                catch(...)
-                {
-                    cerr << "Error " << atm.Id << ": Your transaction failed – account id " << AccountNumber << " does not exist" << endl;
-                }
+            }
+
+  
             }
             else if (Action == "W") // withdraw
             {
@@ -253,7 +252,8 @@ void *ReadInput(void *atm_tmp)
                 }
 
             }
-            else if (Action == "Q"){ // quit account
+            else if (Action == "Q") // quit account
+            {}
             // {
                 
             //     bool insert_flag =true;
@@ -293,6 +293,34 @@ void *ReadInput(void *atm_tmp)
     pthread_exit(NULL);
 }
 
+
+//**************************************************************************************
+// function name: ChargeCommissions
+// Description: charge commissions every half sec
+//**************************************************************************************
+
+//**************************************************************************************
+// function name: ChargeCommissions
+// Description: charge commissions every half sec
+//**************************************************************************************
+
+void* ChargeCommissions (void* nothing)
+{
+    // while(1)
+    // {
+    //     // sleep(1);
+    //     double commission = (25 + (rand()%(63 -25 + 1)) );
+    //     cout << "commission is: " << commission << endl;
+    // // }
+    return(NULL);
+}
+
+
+
+
+
+
+
 //**************************************************************************************
 // function name: main
 // Description: main function
@@ -312,7 +340,7 @@ int main(int argc, char **argv)
         ATMid++;
     }
 
-    threads = (pthread_t*)malloc(sizeof(pthread_t) * NumATM);
+    threads = (pthread_t*)malloc(sizeof(pthread_t) * (NumATM+1) );
     //pthread_t threads[NumATM]; // TODO malloc?
     int rc,t;
     for (t = 0; t < NumATM; t++)
@@ -325,8 +353,16 @@ int main(int argc, char **argv)
 	    free(threads);
             exit(-1);
         }
-        
     }
+    rc = pthread_create(&threads[NumATM], NULL, ChargeCommissions, NULL); // Pthread YOSSI - this is the thread of the bank: every half sec chrghes amlot (HAVE TO CHANGE THE FUNC)
+        if (rc)
+        {
+            cerr << "ERROR; return code from pthread_create() is " << rc << endl;
+            //TODO any last words?
+	    free(threads);
+            exit(-1);
+        }
+
     for (int i = 0; i < NumATM; i++)
     {
         try
@@ -338,12 +374,13 @@ int main(int argc, char **argv)
             cerr << "Caught" <<  e.what() << '\n';
 	    //TODO any last words?
 	    free(threads);
-        }
-        
-        
+        }   
     }
+
+    pthread_exit(NULL);
     
    //TODO any last words?
 	free(threads); 
     exit(0);
 }
+
