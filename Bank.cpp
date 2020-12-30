@@ -26,6 +26,24 @@ using namespace std;
 /* Global Variables */
 BankData Bank;
 pthread_t *threads;
+void BankReadLock()
+{
+    down(&Bank.rd_lock);
+    Bank.rd_count++;
+    if (Bank.rd_count == 1)
+        down(&Bank.wrt_lock);
+    up(&Bank.rd_lock);
+}
+
+void BankReadUnlock()
+{
+    down(&Bank.rd_lock);
+    Bank.rd_count--;
+    if (Bank.rd_count == 0)
+        up(&Bank.wrt_lock);
+    up(&Bank.rd_lock);
+}
+
 int isExist(int AccountNumber, int atmID)
 {
    try
@@ -142,11 +160,7 @@ void *ReadInput(void *atm_tmp)
             else if (Action == "D") //deposit
             {
                 /* Open of bank reader lock */
-                down(&Bank.rd_lock);
-                    Bank.rd_count++;
-                    if (Bank.rd_count == 1)
-                        down(&Bank.wrt_lock);
-                    up(&Bank.rd_lock);
+                BankReadLock();
 
                 if(ACCOUNT_DOESNT_EXIST)
                 {
@@ -157,11 +171,7 @@ void *ReadInput(void *atm_tmp)
                 down(&Acc.wrt_lock);
 
                 /* Close of bank reader lock*/
-                down(&Bank.rd_lock);
-                Bank.rd_count--;
-                if (Bank.rd_count == 0)
-                    up(&Bank.wrt_lock);
-                up(&Bank.rd_lock);
+                BankReadUnlock();
 
                 
                 Acc.setBalance(Acc.getBalance()+Amount);
