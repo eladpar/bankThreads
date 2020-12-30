@@ -263,60 +263,47 @@ void *ReadInput(void *atm_tmp)
                 int Target_Account = Amount;
                 Amount = stoi(The_Real_Amount_);
 
-                try
+                try 
                 {
-                    down(&Acc.wrt_lock);
-                    if(Password != Acc.getPassword())
-                    {
-                        throw(1);
-                    }
-                    if(Amount > Acc.getBalance())
-                    {
-                        throw(2);
-                    }
-                    try
-                    {
-                        down(&TargetAcc.wrt_lock);
-                    }
-                    catch (...)
-                    {
-                        cerr << "Error " << atm.Id << ": Your transaction failed – account id " << Target_Account << " does not exist" << endl;
-                        up(&Acc.wrt_lock);
+                    /* Open of bank reader lock */
+                    BankReadLock();
 
+                    if(isExist(AccountNumber,atm.Id)==NO_ACCOUNT || isExist(Target_Account,atm.Id)==NO_ACCOUNT)
+                    {
+                        BankReadUnlock();
+                        throw(NO_ACCOUNT);
                     }
+                                
+                    down(&Acc.wrt_lock);
+                    down(&TargetAcc.wrt_lock);
+                    /* Close of bank reader lock*/
+                    BankReadUnlock();
+
+                    if(isCorrectPassword(AccountNumber,Password,atm.Id)==WRONG_PASSWORD || 
+                                isIllegalWithdraw(AccountNumber,Amount,atm.Id)==ILLEGAL_WITHDRAW)
+                    {
+                        up(&TargetAcc.wrt_lock);
+                        up(&Acc.wrt_lock);
+                        throw(WRONG_PASSWORD);
+                    }
+
                     Acc.setBalance(Acc.getBalance()-Amount);
                     TargetAcc.setBalance(TargetAcc.getBalance()+Amount);
 
-                    throw(3);
+                    lock(&Bank.log_lock);
+                    cerr << atm.Id << ": Transfer " << Amount << " from account " << AccountNumber << " to account " << Target_Account 
+                        << " new account balance is " << Acc.getBalance() << " new target account balance is " << TargetAcc.getBalance() << endl; 
+                    unlock(&Bank.log_lock);
 
-                }
-
-                catch(int a)
-                {
-
-                    if (a==1)
-                    {
-                        cerr << "Error " << atm.Id << " Your transaction failed – password for account id " << Acc.getId()  << " is incorrect" << endl;
-
-                    }
-                    else if(a==2)
-                    {
-                        cerr << "Error " << atm.Id << " Your transaction failed – account id " << Acc.getId()  << " balance is lower than " << Amount << endl;
-                    }
-                    else if(a==3)
-                    {
-                        cerr << atm.Id << ": Transfer " << Amount << " from account " << AccountNumber << " to account " << Target_Account 
-                        << " new account balance is " << Acc.getBalance() << " new target account balance is " << TargetAcc.getBalance() << endl;                    
-                    }
                     up(&TargetAcc.wrt_lock);
                     up(&Acc.wrt_lock);
                 }
+
                 catch(...)
                 {
-                    cerr << "Error " << atm.Id << ": Your transaction failed – account id " << AccountNumber << " does not exist" << endl;
                 }
-
             }
+            
             else if (Action == "Q") // quit account
             {}
             // {
