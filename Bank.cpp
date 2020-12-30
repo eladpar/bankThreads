@@ -13,13 +13,12 @@
 #define Acc Bank.Accounts.at(AccountNumber) 
 #define TargetAcc Bank.Accounts.at(Target_Account) 
 
-#define WRONG_PASSWORD 1
-#define ILLEGAL_WITHDRAW 2
+#define WRONG_PASSWORD -1
+#define ILLEGAL_WITHDRAW -1
 #define SUCCESS 3
 #define ACCOUNT_DOESNT_EXIST 4
 
 #define CORRECT_PASS 1
-#define WRONG_PASS 0
 #define NO_ACCOUNT -1
 
 using namespace std;
@@ -52,62 +51,44 @@ int isExist(int AccountNumber, int atmID)
    }
    catch(...)
    {
+        lock(&Bank.log_lock); //
         cerr << "Error " << atmID <<": Your transaction failed – account id " << AccountNumber << " does not exist" << endl;
-        return -1;
+        unlock(&Bank.log_lock); //
+        return NO_ACCOUNT;
    }
-   return 0;
+   return SUCCESS;
 }
 
 int isCorrectPassword(int AccountNumber, int password_in_review, int atmID)
 {
     if(Acc.getPassword() == password_in_review)
-        return 0; 
+        return SUCCESS; 
     else
     {
+        lock(&Bank.log_lock); //
         cerr << "Error "<< atmID << ": Your transaction failed – password for account id " << AccountNumber << " is incorrect" << endl;
-        return -1;
+        lock(&Bank.log_lock); //       
+        return WRONG_PASSWORD;
     }
 }
 
-
-
-int isCorrectPasswordelad(int AccountNumber, int password_in_review, int atmID)
+int isIllegalWithdraw(int AccountNumber, int Amount, int atmID)
 {
-    int correct_password = NULL;
-    try
+    if(Amount > Acc.getBalance())
     {
-        down(&Acc.rd_lock);
-        Acc.rd_count++;
-        if (Acc.rd_count == 1)
-            down(&Acc.wrt_lock);
-        up(&Acc.rd_lock);
+        lock(&Bank.log_lock); //
+        cerr << "Error " << atm.Id << " Your transaction failed – account id " <<
+                             Acc.getId()  << " balance is lower than " << Amount << endl;
+        lock(&Bank.log_lock); //       
 
-        if ( password_in_review !=  Acc.getPassword() )
-        {
-            lock(&Bank.log_lock);
-            cerr << "Error "<< atmID << ": Your transaction failed – password for account id " << AccountNumber << " is incorrect" << endl;
-            unlock(&Bank.log_lock);
-            correct_password = WRONG_PASS;
-        }
-        else
-        {
-            correct_password = CORRECT_PASS;
-        }
-
-        down(&Acc.rd_lock);
-        Acc.rd_count--;
-        if (Acc.rd_count == 0)
-            up(&Acc.wrt_lock);
-        up(&Acc.rd_lock);
+        return ILLEGAL_WITHDRAW;
     }
-    catch (...)
-    {
-        cerr << "Error " << atmID <<": Your transaction failed – account id " << AccountNumber << " does not exist" << endl;
-        correct_password = NO_ACCOUNT;
-    }
-    return correct_password;
-
+    else
+        return SUCCESS;
+    
+    
 }
+
 
 void *ReadInput(void *atm_tmp)
 {
@@ -159,71 +140,78 @@ void *ReadInput(void *atm_tmp)
             }
             else if (Action == "D") //deposit
             {
-                /* Open of bank reader lock */
-                BankReadLock();
-
-                if(ACCOUNT_DOESNT_EXIST)
+                try 
                 {
-                   up(&Bank.rd_lock); // TODO hana
-                    continue;
+                    /* Open of bank reader lock */
+                    BankReadLock();
+
+                    if(isExist(AccountNumber,atm.Id)==NO_ACCOUNT)
+                    {
+                        BankReadUnlock();
+                        throw(NO_ACCOUNT);
+                    }
+                                
+                    down(&Acc.wrt_lock);
+
+                    /* Close of bank reader lock*/
+                    BankReadUnlock();
+
+                    if(isCorrectPassword(AccountNumber,Password,atm.Id)==WRONG_PASSWORD)
+                    {
+                        up(&Acc.wrt_lock);
+                        throw(WRONG_PASSWORD);
+                    }
+                    
+                    Acc.setBalance(Acc.getBalance()+Amount);
+                    lock(&Bank.log_lock); //
+                    cerr << atm.Id << ": Account " << Acc.getId() << " new balance is " << Acc.getBalance() << " after " << Amount << " $ was deposited " << endl;
+                    unlock(&Bank.log_lock); //
+                    up(&Acc.wrt_lock);
                 }
-                            
-                down(&Acc.wrt_lock);
 
-                /* Close of bank reader lock*/
-                BankReadUnlock();
+                catch(...)
+                {
 
-                
-                Acc.setBalance(Acc.getBalance()+Amount);
-                lock(&Bank.log_lock); //
-                cerr << atm.Id << ": Account " << Acc.getId() << " new balance is " << Acc.getBalance() << " after " << Amount << " $ was deposited " << endl;
-                unlock(&Bank.log_lock); //
-                up(&Acc.wrt_lock);
+                }
 
             }
 
   
-            }
             else if (Action == "W") // withdraw
             {
+
                 try 
                 {
+                    /* Open of bank reader lock */
+                    BankReadLock();
+
+                    if(isExist(AccountNumber,atm.Id)==NO_ACCOUNT)
+                    {
+                        BankReadUnlock();
+                        throw(NO_ACCOUNT);
+                    }
+                                
                     down(&Acc.wrt_lock);
-                    if(Password != Acc.getPassword())
+
+                    /* Close of bank reader lock*/
+                    BankReadUnlock();
+
+                    if(isCorrectPassword(AccountNumber,Password,atm.Id)==WRONG_PASSWORD || 
+                                isIllegalWithdraw(AccountNumber,Amount,atm.Id)==ILLEGAL_WITHDRAW)
                     {
-                        throw(1);
+                        up(&Acc.wrt_lock);
+                        throw(WRONG_PASSWORD);
                     }
-                    if(Amount > Acc.getBalance())
-                    {
-                        throw(2);
-                    }
+                    
                     Acc.setBalance(Acc.getBalance()-Amount);
-                    throw(3);
+                    lock(&Bank.log_lock); //
+                    cerr << atm.Id << ": Account " << Acc.getId() << " new balance is " << Acc.getBalance() << " after " << Amount << " $ was withdrew " << endl;
+                    unlock(&Bank.log_lock); //
+                    up(&Acc.wrt_lock);                    
 
-                    up(&Acc.wrt_lock);
-
-                }
-                catch(int a)
-                {
-
-                    if (a==1)
-                    {
-                        cerr << "Error " << atm.Id << " Your transaction failed – password for account id " << Acc.getId()  << " is incorrect" << endl;
-
-                    }
-                    else if(a==2)
-                    {
-                        cerr << "Error " << atm.Id << " Your transaction failed – account id " << Acc.getId()  << " balance is lower than " << Amount << endl;
-                    }
-                    else if(a==3)
-                    {
-                        cerr << atm.Id << ": Account " << Acc.getId() << " new balance is " << Acc.getBalance() << " after " << Amount << " $ was withdrew " << endl;
-                    }
-                    up(&Acc.wrt_lock);
                 }
                 catch(...)
                 {
-                    cerr << "Error " << atm.Id << ": Your transaction failed – account id " << AccountNumber << " does not exist" << endl;
                 }
             }
             else if (Action == "B") // balance
