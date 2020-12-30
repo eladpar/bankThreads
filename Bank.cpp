@@ -53,19 +53,19 @@ int isExist(int AccountNumber, int atmID)
    catch(...)
    {
         cerr << "Error " << atmID <<": Your transaction failed – account id " << AccountNumber << " does not exist" << endl;
-        return -1;
+        return NO_ACCOUNT;
    }
-   return 0;
+   return SUCCESS;
 }
 
 int isCorrectPassword(int AccountNumber, int password_in_review, int atmID)
 {
     if(Acc.getPassword() == password_in_review)
-        return 0; 
+        return SUCCESS; 
     else
     {
         cerr << "Error "<< atmID << ": Your transaction failed – password for account id " << AccountNumber << " is incorrect" << endl;
-        return -1;
+        return WRONG_PASSWORD;
     }
 }
 
@@ -73,7 +73,7 @@ int isCorrectPassword(int AccountNumber, int password_in_review, int atmID)
 
 int isCorrectPasswordelad(int AccountNumber, int password_in_review, int atmID)
 {
-    int correct_password = NULL;
+    int correct_password;
     try
     {
         down(&Acc.rd_lock);
@@ -123,7 +123,7 @@ void *ReadInput(void *atm_tmp)
         // File doesn't exist or some other error
         cerr << "illegal arguments" << endl;
         //TODO any last words?
-	free(threads);
+	    free(threads);
         exit(1);
     }
     if (file.is_open())
@@ -149,13 +149,15 @@ void *ReadInput(void *atm_tmp)
                                 << " Password is: " << Password << " Amount is: " << Amount << endl;
             if (Action == "O") //open account // 
             {
-                
-            
-            Account temp_account(AccountNumber, Password, Amount, 0);
-            Bank.Accounts.insert(pair<int, Account>(temp_account.getId(), temp_account)); // TODO lock this ??
-            cerr << atm.Id <<": New account id is "<< AccountNumber << " with password " 
-                    << Password << " and initial balance " << Amount << endl;
-
+                Account temp_account(AccountNumber, Password, Amount, 0);
+                down(&Bank.wrt_lock);
+                if (isExist(AccountNumber, atm.Id) == SUCCESS)
+                {
+                    Bank.Accounts.insert(pair<int, Account>(temp_account.getId(), temp_account)); // TODO lock this ??
+                    cerr << atm.Id <<": New account id is "<< AccountNumber << " with password " 
+                            << Password << " and initial balance " << Amount << endl;
+                }
+                up(&Bank.wrt_lock);
             }
             else if (Action == "D") //deposit
             {
@@ -165,7 +167,7 @@ void *ReadInput(void *atm_tmp)
                 if(ACCOUNT_DOESNT_EXIST)
                 {
                    up(&Bank.rd_lock); // TODO hana
-                    continue;
+                   // continue;
                 }
                             
                 down(&Acc.wrt_lock);
@@ -182,8 +184,7 @@ void *ReadInput(void *atm_tmp)
 
             }
 
-  
-            }
+
             else if (Action == "W") // withdraw
             {
                 try 
@@ -230,7 +231,6 @@ void *ReadInput(void *atm_tmp)
             {
                 int curr_password;
                 int curr_balance;
-                bool no_acount = false;
                 try
                 {
                     down(&Acc.rd_lock);
@@ -330,37 +330,32 @@ void *ReadInput(void *atm_tmp)
 
             }
             else if (Action == "Q") // quit account
-            {}
-            // {
-                
-            //     bool insert_flag =true;
-
-            //     lock(&Bank.list_lock);
-            //     if(Bank.EraseList(AccountNumber) == False)
-            //     {
-            //         cerr << "Error " << atm.Id <<": Your transaction failed – account with the same id exists" << endl; //TODO SAVE TO LOG
-            //          /* cerr << atm.Id << ": Account " << AccountNumber <<
-            //                         " is now closed. Balance was " << <bal> << endl; */
-            //     }
-            //     else
-            //     {
-            //         cerr << "Error " << atm.Id <<": Your transaction failed – account with the same id exists" << endl; //TODO SAVE TO LOG
-            //         insert_flag = false;
-            //     }
-            //     unlock(&Bank.list_lock);
-
-            //     if(insert_flag == true)
-            //     {
-            //         Account temp_account(AccountNumber, Password, Amount, 0);
-            //         Bank.Accounts.insert(pair<int, Account>(temp_account.getId(), temp_account)); // TODO lock this 
-            //     }
-            // }
+            {
+                int num;
+                int balace;
+                down(&Bank.wrt_lock);
+                if (isExist(AccountNumber, atm.Id) == SUCCESS)
+                {
+                    down(&Acc.wrt_lock);
+                    if (isCorrectPassword(AccountNumber, Password, atm.Id) == SUCCESS)
+                    {
+                        balace = Acc.getBalance();
+                        num = Bank.Accounts.erase(AccountNumber);
+                        if (num != 1)
+                            cout << "ERRORRRRRRRRRRRR in Q" << endl; // TODO [DEBUG]
+                        cerr << atm.Id << ": Account "<< AccountNumber << " is now closed. Balance was " << balace << endl;
+                        up(&Acc.wrt_lock);
+                    }
+                    up(&Acc.wrt_lock);
+                    
+                }
+                up(&Bank.wrt_lock);
+            }
             else
             {
-                cerr << "No Such Action " << Action << endl;
+                cerr << "No Such Action " << Action << endl; // TODO [DEBUG?]
             }
-            
-            //Account temp_account(atoi(AccountNumber.c_str()), atoi())
+
         }
         file.close();
     }
@@ -386,8 +381,8 @@ void* ChargeCommissions (void* nothing)
     // while(1)
     // {
     //     // sleep(1);
-    //     double commission = (25 + (rand()%(63 -25 + 1)) );
-    //     cout << "commission is: " << commission << endl;
+        double commission = (25 + (rand()%(63 -25 + 1)) );
+        cout << "commission is: " << commission << endl;
     // // }
     return(NULL);
 }
