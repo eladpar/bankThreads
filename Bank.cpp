@@ -26,8 +26,34 @@ using namespace std;
 /* Global Variables */
 BankData Bank;
 pthread_t *threads;
+int isExist(int AccountNumber, int atmID)
+{
+   try
+   {
+        Account tmp = Acc;
+   }
+   catch(...)
+   {
+        cerr << "Error " << atmID <<": Your transaction failed – account id " << AccountNumber << " does not exist" << endl;
+        return -1;
+   }
+   return 0;
+}
 
 int isCorrectPassword(int AccountNumber, int password_in_review, int atmID)
+{
+    if(Acc.getPassword() == password_in_review)
+        return 0; 
+    else
+    {
+        cerr << "Error "<< atmID << ": Your transaction failed – password for account id " << AccountNumber << " is incorrect" << endl;
+        return -1;
+    }
+}
+
+
+
+int isCorrectPasswordelad(int AccountNumber, int password_in_review, int atmID)
 {
     int correct_password = NULL;
     try
