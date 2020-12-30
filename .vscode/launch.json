@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/Bank",
-            "args": [],
+            "args": ["2", "test_input" , "test_input4"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],

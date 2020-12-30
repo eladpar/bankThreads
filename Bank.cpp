@@ -59,6 +59,19 @@ int isExist(int AccountNumber, int atmID)
    return SUCCESS;
 }
 
+int isExistNew(int AccountNumber, int atmID)
+{
+   try
+   {
+        Account tmp = Acc;
+   }
+   catch(...)
+   {
+        return NO_ACCOUNT;
+   }
+   return SUCCESS;
+}
+
 int isCorrectPassword(int AccountNumber, int password_in_review, int atmID)
 {
     if(Acc.getPassword() == password_in_review)
@@ -67,7 +80,7 @@ int isCorrectPassword(int AccountNumber, int password_in_review, int atmID)
     {
         lock(&Bank.log_lock); //
         cerr << "Error "<< atmID << ": Your transaction failed – password for account id " << AccountNumber << " is incorrect" << endl;
-        lock(&Bank.log_lock); //       
+        unlock(&Bank.log_lock); //       
         return WRONG_PASSWORD;
     }
 }
@@ -77,9 +90,9 @@ int isIllegalWithdraw(int AccountNumber, int Amount, int atmID)
     if(Amount > Acc.getBalance())
     {
         lock(&Bank.log_lock); //
-        cerr << "Error " << atm.Id << " Your transaction failed – account id " <<
+        cerr << "Error " << atmID << " Your transaction failed – account id " <<
                              Acc.getId()  << " balance is lower than " << Amount << endl;
-        lock(&Bank.log_lock); //       
+        unlock(&Bank.log_lock); //       
 
         return ILLEGAL_WITHDRAW;
     }
@@ -125,19 +138,29 @@ void *ReadInput(void *atm_tmp)
             int Amount = stoi(Amount_);
 
             //TODO sleep(1)
-
+            
              cout << "Action is : " << Action << " Account Number is: " << AccountNumber 
                                 << " Password is: " << Password << " Amount is: " << Amount << endl;
             if (Action == "O") //open account // 
             {
                 Account temp_account(AccountNumber, Password, Amount, 0);
                 down(&Bank.wrt_lock);
-                if (isExist(AccountNumber, atm.Id) == SUCCESS)
+                if (isExistNew(AccountNumber, atm.Id) == NO_ACCOUNT)
                 {
                     Bank.Accounts.insert(pair<int, Account>(temp_account.getId(), temp_account)); // TODO lock this ??
+                    lock(&Bank.log_lock);
                     cerr << atm.Id <<": New account id is "<< AccountNumber << " with password " 
                             << Password << " and initial balance " << Amount << endl;
+                    unlock(&Bank.log_lock);
                 }
+                else
+                {
+                    lock(&Bank.log_lock);
+                    cerr << "Error " << atm.Id << ": Your transaction failed – account with the same id exists" << endl;
+                    unlock(&Bank.log_lock);
+                    
+                }
+                
                 up(&Bank.wrt_lock);
             }
             else if (Action == "D") //deposit
@@ -320,6 +343,7 @@ void *ReadInput(void *atm_tmp)
             }
             else if (Action == "Q") // quit account
             {
+                bool closed = false;
                 int num;
                 int balace;
                 down(&Bank.wrt_lock);
@@ -332,10 +356,13 @@ void *ReadInput(void *atm_tmp)
                         num = Bank.Accounts.erase(AccountNumber);
                         if (num != 1)
                             cout << "ERRORRRRRRRRRRRR in Q" << endl; // TODO [DEBUG]
+                        lock(&Bank.log_lock);
                         cerr << atm.Id << ": Account "<< AccountNumber << " is now closed. Balance was " << balace << endl;
-                        up(&Acc.wrt_lock);
+                        unlock(&Bank.log_lock);
+                        closed =true;
                     }
-                    up(&Acc.wrt_lock);
+                    if (closed != true)
+                        up(&Acc.wrt_lock);
                     
                 }
                 up(&Bank.wrt_lock);

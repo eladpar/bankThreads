@@ -32,6 +32,11 @@ void Account::setBalance(int balance_)
 
 BankData::BankData()
 {
+    if ( (sem_init(&wrt_lock, 0, 1) != 0) || (sem_init(&rd_lock, 0, 1) != 0) )
+				{
+					// Error: initialization failed
+					//TODO any last words?
+				}
     ATMcounter = 1;
 }
 
