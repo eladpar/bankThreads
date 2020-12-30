@@ -1,3 +1,0 @@
-1: New account id is 12345 with password 1234 and initial balance 100
-1: New account id is 12346 with password 1234 and initial balance 2000
-1: Transfer 70 from account 12345 to account 12346 new account balance is 30 new target account balance is 2070

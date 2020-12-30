@@ -65,8 +65,6 @@ void *ReadInput(void *atm_tmp)
                 if(Bank.CheckList(AccountNumber) == false)
                 {
                     Bank.AccountList.push_back(AccountNumber);
-                     cerr << atm.Id <<": New account id is "<< AccountNumber << " with password " 
-                                                << Password << " and initial balance " << Amount << endl;
                 }
                 else
                 {
@@ -78,7 +76,9 @@ void *ReadInput(void *atm_tmp)
                 if(insert_flag == true)
                 {
                     Account temp_account(AccountNumber, Password, Amount, 0);
-                    Bank.Accounts.insert(pair<int, Account>(temp_account.getId(), temp_account)); // TODO lock this 
+                    Bank.Accounts.insert(pair<int, Account>(temp_account.getId(), temp_account)); // TODO lock this ??
+                    cerr << atm.Id <<": New account id is "<< AccountNumber << " with password " 
+                            << Password << " and initial balance " << Amount << endl;
                 }
             }
             else if (Action == "D") //deposit
@@ -159,8 +159,38 @@ void *ReadInput(void *atm_tmp)
             }
             else if (Action == "B") // balance
             {
-                down(&Bank.Accounts.at(AccountNumber).rd_lock);
-               // Bank.Accounts.at()
+                int curr_password;
+                int curr_balance;
+                bool no_acount = false;
+                try
+                {
+                    down(&Acc.rd_lock);
+                    Acc.rd_count++;
+                    if (Acc.rd_count == 1)
+                        down(&Acc.wrt_lock);
+                    up(&Acc.rd_lock);
+                    curr_password = Acc.getPassword();
+                    curr_balance = Acc.getBalance();
+                    down(&Acc.rd_lock);
+                    Acc.rd_count--;
+                    if (Acc.rd_count == 0)
+                        up(&Acc.wrt_lock);
+                    up(&Acc.rd_lock);
+                }
+                catch (...)
+                {
+                    cerr << "Error " << atm.Id <<": Your transaction failed – account id " << AccountNumber << " does not exist" << endl;
+                    no_acount = true;
+                }
+
+                if ( (Password != curr_password) && (no_acount == false))
+                {
+                    cerr << "Error "<< atm.Id << ": Your transaction failed – password for account id " << AccountNumber << " is incorrect" << endl;
+                }
+                else if ( (Password == curr_password) && (no_acount == false))
+                {
+                    cerr << atm.Id << ": Account " << AccountNumber << " balance is " << curr_balance << endl;
+                }
             }
             else if (Action == "T") // transfer
             {
@@ -223,10 +253,31 @@ void *ReadInput(void *atm_tmp)
                 }
 
             }
-            else if (Action == "Q") // quit account
-            {
-                /* code */
-            }
+            else if (Action == "Q"){ // quit account
+            // {
+                
+            //     bool insert_flag =true;
+
+            //     lock(&Bank.list_lock);
+            //     if(Bank.EraseList(AccountNumber) == False)
+            //     {
+            //         cerr << "Error " << atm.Id <<": Your transaction failed – account with the same id exists" << endl; //TODO SAVE TO LOG
+            //          /* cerr << atm.Id << ": Account " << AccountNumber <<
+            //                         " is now closed. Balance was " << <bal> << endl; */
+            //     }
+            //     else
+            //     {
+            //         cerr << "Error " << atm.Id <<": Your transaction failed – account with the same id exists" << endl; //TODO SAVE TO LOG
+            //         insert_flag = false;
+            //     }
+            //     unlock(&Bank.list_lock);
+
+            //     if(insert_flag == true)
+            //     {
+            //         Account temp_account(AccountNumber, Password, Amount, 0);
+            //         Bank.Accounts.insert(pair<int, Account>(temp_account.getId(), temp_account)); // TODO lock this 
+            //     }
+            // }
             else
             {
                 cerr << "No Such Action " << Action << endl;

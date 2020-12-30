@@ -56,6 +56,21 @@ bool BankData::CheckList(int AccountNumber)
     
 }
 
+bool BankData::EraseList(int AccountNumber)
+{
+    list<int>::iterator it = find(AccountList.begin(), AccountList.end(), AccountNumber); 
+    if (it == AccountList.end()) 
+    { 
+        return false;
+    } 
+    else
+    {
+        AccountList.erase(it);
+        return true;
+    }
+    
+}
+
 int BankData::get_ATMcounter()
 {
     return ATMcounter;

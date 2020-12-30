@@ -18,4 +18,4 @@ Bank.o: Bank.cpp BankData.hpp
 	$(CCLINK) $(CFLAGS)  -c Bank.cpp
 # Cleaning old files before new make
 clean:
-	$(RM) Bank *.o *~ "#"* core.*
+	$(RM) Bank *.o *~ "#"* core.* log.txt
