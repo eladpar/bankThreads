@@ -64,15 +64,17 @@ class BankData
 		/* Variables */
 		map <int , Account> Accounts;
 		pthread_mutex_t log_lock;
-
+		Account Self;
 		sem_t wrt_lock;
 		sem_t rd_lock;
 		int rd_count;
 		
 		/* Getters */
 		int get_ATMcounter();
+		int getSelfBalance();
 		/* Setters */
 		void promote_ATMcounter();
+		void setSelfBalance(int balance);
 		/* Destructor */
 		~BankData();
 

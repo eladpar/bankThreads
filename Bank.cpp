@@ -145,6 +145,7 @@ void *ReadInput(void *atm_tmp)
             {
                 Account temp_account(AccountNumber, Password, Amount, 0);
                 down(&Bank.wrt_lock);
+                sleep(1);
                 if (isExistNew(AccountNumber, atm.Id) == NO_ACCOUNT)
                 {
                     Bank.Accounts.insert(pair<int, Account>(temp_account.getId(), temp_account)); // TODO lock this ??
@@ -180,7 +181,7 @@ void *ReadInput(void *atm_tmp)
 
                     /* Close of bank reader lock*/
                     BankReadUnlock();
-
+                    sleep(1);
                     if(isCorrectPassword(AccountNumber,Password,atm.Id)==WRONG_PASSWORD)
                     {
                         up(&Acc.wrt_lock);
@@ -193,7 +194,13 @@ void *ReadInput(void *atm_tmp)
                     unlock(&Bank.log_lock); //
                     up(&Acc.wrt_lock);
                 }
-
+                catch(int reason)
+                {
+                    if (reason == NO_ACCOUNT)
+                    {
+                        sleep(1);
+                    }
+                }
                 catch(...)
                 {
 
@@ -220,7 +227,7 @@ void *ReadInput(void *atm_tmp)
 
                     /* Close of bank reader lock*/
                     BankReadUnlock();
-
+                    sleep(1);
                     if(isCorrectPassword(AccountNumber,Password,atm.Id)==WRONG_PASSWORD || 
                                 isIllegalWithdraw(AccountNumber,Amount,atm.Id)==ILLEGAL_WITHDRAW)
                     {
@@ -235,8 +242,16 @@ void *ReadInput(void *atm_tmp)
                     up(&Acc.wrt_lock);                    
 
                 }
+                catch(int reason)
+                {
+                    if (reason == NO_ACCOUNT)
+                    {
+                        sleep(1);
+                    }
+                }
                 catch(...)
                 {
+
                 }
             }
             else if (Action == "B") // balance
@@ -302,7 +317,7 @@ void *ReadInput(void *atm_tmp)
                     down(&TargetAcc.wrt_lock);
                     /* Close of bank reader lock*/
                     BankReadUnlock();
-
+                    sleep(1);
                     if(isCorrectPassword(AccountNumber,Password,atm.Id)==WRONG_PASSWORD || 
                                 isIllegalWithdraw(AccountNumber,Amount,atm.Id)==ILLEGAL_WITHDRAW)
                     {
@@ -322,7 +337,13 @@ void *ReadInput(void *atm_tmp)
                     up(&TargetAcc.wrt_lock);
                     up(&Acc.wrt_lock);
                 }
-
+                catch(int reason)
+                {
+                    if (reason == NO_ACCOUNT)
+                    {
+                        sleep(1);
+                    }
+                }
                 catch(...)
                 {
                 }
@@ -337,6 +358,7 @@ void *ReadInput(void *atm_tmp)
                 if (isExist(AccountNumber, atm.Id) == SUCCESS)
                 {
                     down(&Acc.wrt_lock);
+                    sleep(1); 
                     if (isCorrectPassword(AccountNumber, Password, atm.Id) == SUCCESS)
                     {
                         balace = Acc.getBalance();
@@ -384,9 +406,17 @@ void* ChargeCommissions (void* nothing)
     // while(1)
     // {
     //     // sleep(1);
-        double commission = (25 + (rand()%(63 -25 + 1)) );
-        cout << "commission is: " << commission << endl;
+    
+    srand((unsigned) time(0));
+    double commission = (20 + (rand()%(49 -20 + 1)) ) / 10;
+    cout << "commission is: " << commission << endl;
+    // printf("\033[2J");
+    // printf("\033[1;1H");
+    // cout << "ckearewd" << endl;
     // // }
+
+
+    
     return(NULL);
 }
 
