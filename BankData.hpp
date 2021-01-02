@@ -9,8 +9,8 @@
 #include <algorithm>
 #include <semaphore.h>
 
-#define up sem_wait
-#define down sem_post
+#define down sem_wait
+#define up sem_post
 using namespace std;
 
 class Account 

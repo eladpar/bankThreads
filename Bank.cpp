@@ -407,9 +407,9 @@ void* ChargeCommissions (void* nothing)
     // {
     //     // sleep(1);
     
-    srand((unsigned) time(0));
-    double commission = (20 + (rand()%(49 -20 + 1)) ) / 10;
-    cout << "commission is: " << commission << endl;
+   // srand((unsigned) time(0));
+   // double commission = (20 + (rand()%(49 -20 + 1)) ) / 10;
+    //cout << "commission is: " << commission << endl;
     // printf("\033[2J");
     // printf("\033[1;1H");
     // cout << "ckearewd" << endl;
