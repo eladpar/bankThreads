@@ -1,0 +1,10 @@
+#!/bin/bash
+
+for i in {11..20}
+ do
+  mkdir $i
+  terminator -e "echo \"itttt issss ${i}\";cd ${i}; cp ../Bank ./;./Bank 4 ../test_input3 ../test_input3 ../test_input3 ../test_input3;echo "------";cat log.txt;sleep 10s;"
+ done 
+
+
+
