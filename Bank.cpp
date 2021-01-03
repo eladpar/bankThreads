@@ -521,6 +521,10 @@ int main(int argc, char **argv)
 {
     if (argc < 3) cerr << "illegal arguments" << endl;
     freopen( "log.txt", "w", stderr );
+    double com = 4/100.0;
+    // int a =5;
+    // int num = (int)a*(double)com/100;
+    cout << " number isssss" << com << endl;
     int NumATM = atoi(argv[1]);
     //int *ptr[NumATM];
     vector <ATM> ATM_vector;
