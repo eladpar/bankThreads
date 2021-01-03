@@ -22,6 +22,7 @@
 #define NO_ACCOUNT -1
 
 using namespace std;
+
 /* Global Variables */
 BankData Bank;
 pthread_t *threads;
@@ -54,7 +55,8 @@ int isExist(int AccountNumber, int atmID)
    catch(...)
    {
         lock(&Bank.log_lock); //
-        cerr << "Error " << atmID <<": Your transaction failed – account id " << AccountNumber << " does not exist" << endl;
+        cerr << "Error " << atmID <<": Your transaction failed – account id " 
+                                << AccountNumber << " does not exist" << endl;
         unlock(&Bank.log_lock); //
         return NO_ACCOUNT;
    }
@@ -81,7 +83,8 @@ int isCorrectPassword(int AccountNumber, int password_in_review, int atmID)
     else
     {
         lock(&Bank.log_lock); //
-        cerr << "Error "<< atmID << ": Your transaction failed – password for account id " << AccountNumber << " is incorrect" << endl;
+        cerr << "Error "<< atmID << ": Your transaction failed – password for account id " 
+                                        << AccountNumber << " is incorrect" << endl;
         unlock(&Bank.log_lock); //       
         return WRONG_PASSWORD;
     }
@@ -140,10 +143,8 @@ void *ReadInput(void *atm_tmp)
             int Password = stoi(Password_);
             int Amount = stoi(Amount_);
 
-            //TODO sleep(1)
-            
-             cout << "Action is : " << Action << " Account Number is: " << AccountNumber 
-                                << " Password is: " << Password << " Amount is: " << Amount << endl;
+            //  cout << "Action is : " << Action << " Account Number is: " << AccountNumber 
+            //                     << " Password is: " << Password << " Amount is: " << Amount << endl;
             if (Action == "O") //open account // 
             {
                 Account temp_account(AccountNumber, Password, Amount, 0);
@@ -151,7 +152,7 @@ void *ReadInput(void *atm_tmp)
                 sleep(1);
                 if (isExistNew(AccountNumber, atm.Id) == NO_ACCOUNT)
                 {
-                    Bank.Accounts.insert(pair<int, Account>(temp_account.getId(), temp_account)); // TODO lock this ??
+                    Bank.Accounts.insert(pair<int, Account>(temp_account.getId(), temp_account)); 
                     lock(&Bank.log_lock);
                     cerr << atm.Id <<": New account id is "<< AccountNumber << " with password " 
                             << Password << " and initial balance " << Amount << endl;
@@ -160,11 +161,11 @@ void *ReadInput(void *atm_tmp)
                 else
                 {
                     lock(&Bank.log_lock);
-                    cerr << "Error " << atm.Id << ": Your transaction failed – account with the same id exists" << endl;
+                    cerr << "Error " << atm.Id 
+                            << ": Your transaction failed – account with the same id exists" << endl;
                     unlock(&Bank.log_lock);
                     
                 }
-                
                 up(&Bank.wrt_lock);
             }
             else if (Action == "D") //deposit
@@ -193,7 +194,8 @@ void *ReadInput(void *atm_tmp)
                     
                     Acc.setBalance(Acc.getBalance()+Amount);
                     lock(&Bank.log_lock); //
-                    cerr << atm.Id << ": Account " << Acc.getId() << " new balance is " << Acc.getBalance() << " after " << Amount << " $ was deposited " << endl;
+                    cerr << atm.Id << ": Account " << Acc.getId() << " new balance is " 
+                            << Acc.getBalance() << " after " << Amount << " $ was deposited " << endl;
                     unlock(&Bank.log_lock); //
                     up(&Acc.wrt_lock);
                 }
@@ -240,7 +242,8 @@ void *ReadInput(void *atm_tmp)
                     
                     Acc.setBalance(Acc.getBalance()-Amount);
                     lock(&Bank.log_lock); //
-                    cerr << atm.Id << ": Account " << Acc.getId() << " new balance is " << Acc.getBalance() << " after " << Amount << " $ was withdrew " << endl;
+                    cerr << atm.Id << ": Account " << Acc.getId() << " new balance is " 
+                                    << Acc.getBalance() << " after " << Amount << " $ was withdrew " << endl;
                     unlock(&Bank.log_lock); //
                     up(&Acc.wrt_lock);                    
 
@@ -276,7 +279,8 @@ void *ReadInput(void *atm_tmp)
                     if ( Password != curr_password )
                     {
                         lock(&Bank.log_lock);
-                        cerr << "Error "<< atm.Id << ": Your transaction failed – password for account id " << AccountNumber << " is incorrect" << endl;
+                        cerr << "Error "<< atm.Id << ": Your transaction failed – password for account id " 
+                                                                << AccountNumber << " is incorrect" << endl;
                         unlock(&Bank.log_lock);
                     }
                     else
@@ -294,7 +298,8 @@ void *ReadInput(void *atm_tmp)
                 }
                 catch (...)
                 {
-                    cerr << "Error " << atm.Id <<": Your transaction failed – account id " << AccountNumber << " does not exist" << endl;
+                    cerr << "Error " << atm.Id <<": Your transaction failed – account id " 
+                                            << AccountNumber << " does not exist" << endl;
                 }
 
             }
@@ -333,8 +338,10 @@ void *ReadInput(void *atm_tmp)
                     TargetAcc.setBalance(TargetAcc.getBalance()+Amount);
 
                     lock(&Bank.log_lock);
-                    cerr << atm.Id << ": Transfer " << Amount << " from account " << AccountNumber << " to account " << Target_Account 
-                        << " new account balance is " << Acc.getBalance() << " new target account balance is " << TargetAcc.getBalance() << endl; 
+                    cerr << atm.Id << ": Transfer " << Amount << " from account " 
+                                << AccountNumber << " to account " << Target_Account 
+                                << " new account balance is " << Acc.getBalance() 
+                                << " new target account balance is " << TargetAcc.getBalance() << endl; 
                     unlock(&Bank.log_lock);
 
                     up(&TargetAcc.wrt_lock);
@@ -369,7 +376,8 @@ void *ReadInput(void *atm_tmp)
                         if (num != 1)
                             cout << "ERRORRRRRRRRRRRR in Q" << endl; // TODO [DEBUG]
                         lock(&Bank.log_lock);
-                        cerr << atm.Id << ": Account "<< AccountNumber << " is now closed. Balance was " << balace << endl;
+                        cerr << atm.Id << ": Account "<< AccountNumber 
+                                    << " is now closed. Balance was " << balace << endl;
                         unlock(&Bank.log_lock);
                         closed =true;
                     }
@@ -393,43 +401,6 @@ void *ReadInput(void *atm_tmp)
     pthread_exit(NULL);
 }
 
-
-//**************************************************************************************
-// function name: ChargeCommissions
-// Description: charge commissions every half sec
-//**************************************************************************************
-
-
-//**************************************************************************************
-// function name: Charger
-// Description: charge commissions every 3 sec from a specific account
-//**************************************************************************************
-
-// void* Charger (void* tmp)
-// {
-//     ChargerThread charger = *((ChargerThread*)tmp);
-//     int AccountNumber = charger.AccountNumber;
-//     try 
-//     {   
-//     down(&Acc.wrt_lock);
-//     int Amount = (Acc.getBalance()*(charger.Commision)/100);
-//     Acc.setBalance(Acc.getBalance()-Amount);
-//     lock(&Bank.log_lock); //
-//     cerr << "Bank: commision of "<< charger.Commision << " were charged, the bank gained " << Amount << " $ from account " << AccountNumber << endl;
-//     unlock(&Bank.log_lock); //
-//     up(&Acc.wrt_lock); 
-//     } 
-
-//     catch(...)
-//     {
-//         cout << "got to catch in charger and the account number is: " << AccountNumber
-//          << "the commision is: " << charger.Commision << endl;
-//     }
-
-//     return NULL;
-// }
-
-
 //**************************************************************************************
 // function name: ChargeCommissions
 // Description: create threads who charges commissions every 3 sec
@@ -442,7 +413,6 @@ void* ChargeCommissions (void* nothing)
         sleep(3);
         srand((unsigned) time(0));
         double commission = (20 + (rand()%(49 -20 + 1)) ) / 1000.0;
-        cout << "commission is: " << commission << endl;
         BankReadLock();
         map<int , Account>::iterator it;
         for (it = Bank.Accounts.begin(); it != Bank.Accounts.end(); it++)
@@ -499,7 +469,7 @@ void* Printer (void* nothing)
                 up(&Acc.rd_lock);
             }
         cout << "The Bank has " << Bank.getSelfBalance() << " $" << endl;
-        BankReadUnlock();
+        up(&Bank.wrt_lock);
     }
 
     return(NULL);
@@ -539,8 +509,8 @@ int main(int argc, char **argv)
             exit(-1);
         }
     }
-
-    rc = pthread_create(&threads[NumATM], NULL, ChargeCommissions, NULL); // Pthread YOSSI - this is the thread of the bank: every 3 sec chrghes amlot
+    // Pthread YOSSI - this is the thread of the bank: every 3 sec chrghes amlot
+    rc = pthread_create(&threads[NumATM], NULL, ChargeCommissions, NULL);
         if (rc)
         {
             cerr << "ERROR; return code from pthread_create() is " << rc << endl;
@@ -548,7 +518,8 @@ int main(int argc, char **argv)
 	       free(threads);
             exit(-1);
         }
-    rc = pthread_create(&threads[NumATM+1], NULL, Printer, NULL); // Pthread MOSHE - this is the thread of the bank: every half sec prints the situation
+        // Pthread MOSHE - this is the thread of the bank: every half sec prints the situation
+    rc = pthread_create(&threads[NumATM+1], NULL, Printer, NULL); 
         if (rc)
         {
             cerr << "ERROR; return code from pthread_create() is " << rc << endl;
@@ -570,10 +541,10 @@ int main(int argc, char **argv)
 	    free(threads);
         }   
     }
-cout << "hegatii" << endl;
     lock(&Bank.log_lock);
     pthread_cancel(threads[NumATM]);
     pthread_cancel(threads[NumATM+1]);
+    unlock(&Bank.log_lock);
 
    //TODO any last words?
 	free(threads); 

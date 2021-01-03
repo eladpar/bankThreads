@@ -92,10 +92,6 @@ class ATM
 		int Id;
 		string command;
 
-		/* Printers */
-		//void printer_AccNumberIsTaken(); 
-		//void printer_AccOpenSucceeded(int id,int password,int balance);
-
 		/* Destructor */
 		~ATM(){};
 
