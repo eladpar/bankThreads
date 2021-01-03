@@ -404,29 +404,29 @@ void *ReadInput(void *atm_tmp)
 // Description: charge commissions every 3 sec from a specific account
 //**************************************************************************************
 
-void* Charger (void* tmp)
-{
-    ChargerThread charger = *((ChargerThread*)tmp);
-    int AccountNumber = charger.AccountNumber;
-    try 
-    {   
-    down(&Acc.wrt_lock);
-    int Amount = (Acc.getBalance()*(charger.Commision)/100);
-    Acc.setBalance(Acc.getBalance()-Amount);
-    lock(&Bank.log_lock); //
-    cerr << "Bank: commision of "<< charger.Commision << " were charged, the bank gained " << Amount << " $ from account " << AccountNumber << endl;
-    unlock(&Bank.log_lock); //
-    up(&Acc.wrt_lock); 
-    } 
+// void* Charger (void* tmp)
+// {
+//     ChargerThread charger = *((ChargerThread*)tmp);
+//     int AccountNumber = charger.AccountNumber;
+//     try 
+//     {   
+//     down(&Acc.wrt_lock);
+//     int Amount = (Acc.getBalance()*(charger.Commision)/100);
+//     Acc.setBalance(Acc.getBalance()-Amount);
+//     lock(&Bank.log_lock); //
+//     cerr << "Bank: commision of "<< charger.Commision << " were charged, the bank gained " << Amount << " $ from account " << AccountNumber << endl;
+//     unlock(&Bank.log_lock); //
+//     up(&Acc.wrt_lock); 
+//     } 
 
-    catch(...)
-    {
-        cout << "got to catch in charger and the account number is: " << AccountNumber
-         << "the commision is: " << charger.Commision << endl;
-    }
+//     catch(...)
+//     {
+//         cout << "got to catch in charger and the account number is: " << AccountNumber
+//          << "the commision is: " << charger.Commision << endl;
+//     }
 
-    return NULL;
-}
+//     return NULL;
+// }
 
 
 //**************************************************************************************
@@ -440,8 +440,7 @@ void* ChargeCommissions (void* nothing)
     // {
     //     // sleep(1);
     
-   // srand((unsigned) time(0));
-   // double commission = (20 + (rand()%(49 -20 + 1)) ) / 10;
+;
     //cout << "commission is: " << commission << endl;
     // printf("\033[2J");
     // printf("\033[1;1H");
@@ -453,55 +452,23 @@ void* ChargeCommissions (void* nothing)
     while(1)
     {
         sleep(3);
-        double commission = 3.25;
+        srand((unsigned) time(0));
+        double commission = (20 + (rand()%(49 -20 + 1)) ) / 1000.0;
         cout << "commission is: " << commission << endl;
         BankReadLock();
         map<int , Account>::iterator it;
         for (it = Bank.Accounts.begin(); it != Bank.Accounts.end(); it++)
             {
-                
+                down(&it->second.wrt_lock);
+                double Amount = it->second.getBalance()*commission;
+                it->second.setBalance(it->second.getBalance()-(int)Amount);
+                lock(&Bank.log_lock);
+                cerr << "Bank: commissions of " << (commission*100) << " % were charged, the bank gained "
+                             << (int)Amount << " $ from account " << it->first << endl;
+                unlock(&Bank.log_lock);
+                up(&it->second.wrt_lock);
             }
-
-
-
-        // BankReadLock();
-        // int size = Bank.Accounts.size();
-        // charger_threads = (pthread_t*)malloc(sizeof(pthread_t) * size );
-        // vector <ChargerThread> ChargerThread_vector;
-
-
-        // int rc,t=0;
-
-        // try{
-        //     map<int , Account>::iterator it;
-        //     for (it = Bank.Accounts.begin(); it != Bank.Accounts.end(); it++,t++)
-        //     {
-        //         ChargerThread tmp(it->first,commission);
-        //         ChargerThread_vector.push_back(tmp);
-        //     }
-        // t=0;
-        //     for (it = Bank.Accounts.begin(); it != Bank.Accounts.end(); it++,t++)
-        //     {
-        //         cout << "hegati and t is: " << t << endl;
-
-        //         cout << "it->first is: " << it->first << " tmp.accountnumber is: " << ChargerThread_vector[t].AccountNumber << endl;
-        //         rc = pthread_create(&charger_threads[t], NULL, Charger, (void*)&ChargerThread_vector[t]);
-        //         if (rc)
-        //         {
-        //             BankReadUnlock();
-        //             cerr << "ERROR; return code from pthread_create() is " << rc << endl;
-        //             //TODO any last words?
-        //             free(threads);
-        //             exit(-1);
-        //         }
-        //     }
-        // }
-        // catch(...)
-        // {
-        // cout << "got to catch in ChargerCommissions" << endl;
-        // }
-        // BankReadUnlock();
-     
+        BankReadUnlock();
     }
 
     return(NULL);
@@ -552,7 +519,7 @@ int main(int argc, char **argv)
         {
             cerr << "ERROR; return code from pthread_create() is " << rc << endl;
             //TODO any last words?
-	    free(threads);
+	       free(threads);
             exit(-1);
         }
 
@@ -569,8 +536,9 @@ int main(int argc, char **argv)
 	    free(threads);
         }   
     }
-
-    pthread_exit(NULL);
+cout << "hegatii" << endl;
+    lock(&Bank.log_lock);
+    pthread_cancel(threads[NumATM]);
     
    //TODO any last words?
 	free(threads); 

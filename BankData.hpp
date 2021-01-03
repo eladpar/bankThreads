@@ -103,17 +103,3 @@ class ATM
 
 
 };
-
-class ChargerThread 
-{
-	private:
-
-	public:
-	ChargerThread(int AccountNumber_, int Commision_):
-			AccountNumber(AccountNumber_), Commision(Commision_) {};
-
-	int AccountNumber;
-	int Commision;
-
-	~ChargerThread() {};
-};
