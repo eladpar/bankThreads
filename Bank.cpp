@@ -126,6 +126,7 @@ void *ReadInput(void *atm_tmp)
     {
         while ( getline (file,line) )
         {
+            usleep(100000);
             string delimiter = " ";
             string Action = line.substr(0, line.find(delimiter)); //searching for first delimiter and cutting string before
             line.erase(0, line.find(delimiter) + delimiter.length());
