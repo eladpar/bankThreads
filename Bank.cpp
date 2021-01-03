@@ -431,10 +431,15 @@ void* ChargeCommissions (void* nothing)
             map<int , Account>::iterator it;
             for (it = Bank.Accounts.begin(); it != Bank.Accounts.end(); it++,t++)
             {
-                cout << "hegati" << endl;
                 ChargerThread tmp(it->first,commission);
                 ChargerThread_vector.push_back(tmp);
-                cout << "it->first is: " << it->first << " tmp.accountnumber is: "<< tmp.AccountNumber << endl;
+            }
+        t=0;
+            for (it = Bank.Accounts.begin(); it != Bank.Accounts.end(); it++,t++)
+            {
+                cout << "hegati and t is: " << t << endl;
+
+                cout << "it->first is: " << it->first << " tmp.accountnumber is: " << ChargerThread_vector[t] << endl;
                 rc = pthread_create(&charger_threads[t], NULL, Charger, (void*)&ChargerThread_vector[t]);
                 if (rc)
                 {
