@@ -9,8 +9,8 @@
 #include <algorithm>
 #include <semaphore.h>
 
-#define up sem_wait
-#define down sem_post
+#define down sem_wait
+#define up sem_post
 using namespace std;
 
 class Account 
@@ -100,4 +100,18 @@ class ATM
 
 
 
+};
+
+class ChargerThread 
+{
+	private:
+
+	public:
+	ChargerThread(int AccountNumber_, int Commision_):
+			AccountNumber(AccountNumber_), Commision(Commision_) {};
+
+	int AccountNumber;
+	int Commision;
+
+	~ChargerThread() {};
 };

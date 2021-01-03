@@ -25,6 +25,8 @@ using namespace std;
 /* Global Variables */
 BankData Bank;
 pthread_t *threads;
+pthread_t *charger_threads;
+
 void BankReadLock()
 {
     down(&Bank.rd_lock);
@@ -374,19 +376,96 @@ void *ReadInput(void *atm_tmp)
 // Description: charge commissions every half sec
 //**************************************************************************************
 
+
+//**************************************************************************************
+// function name: Charger
+// Description: charge commissions every 3 sec from a specific account
+//**************************************************************************************
+
+void* Charger (void* tmp)
+{
+    ChargerThread charger = *((ChargerThread*)tmp);
+    int AccountNumber = charger.AccountNumber;
+    try 
+    {   
+    down(&Acc.wrt_lock);
+    int Amount = (Acc.getBalance()*(charger.Commision)/100);
+    Acc.setBalance(Acc.getBalance()-Amount);
+    lock(&Bank.log_lock); //
+    cerr << "Bank: commision of "<< charger.Commision << " were charged, the bank gained " << Amount << " $ from account " << AccountNumber << endl;
+    unlock(&Bank.log_lock); //
+    up(&Acc.wrt_lock); 
+    } 
+
+    catch(...)
+    {
+        cout << "got to catch in charger and the account number is: " << AccountNumber
+         << "the commision is: " << charger.Commision << endl;
+    }
+
+    return NULL;
+}
+
+
 //**************************************************************************************
 // function name: ChargeCommissions
-// Description: charge commissions every half sec
+// Description: create threads who charges commissions every 3 sec
 //**************************************************************************************
 
 void* ChargeCommissions (void* nothing)
 {
-    // while(1)
-    // {
-    //     // sleep(1);
-        double commission = (25 + (rand()%(63 -25 + 1)) );
+    while(1)
+    {
+        sleep(3);
+        double commission = 3.25;
         cout << "commission is: " << commission << endl;
-    // // }
+        BankReadLock();
+        int size = Bank.Accounts.size();
+        charger_threads = (pthread_t*)malloc(sizeof(pthread_t) * size );
+        vector <ChargerThread> ChargerThread_vector;
+
+
+        int rc,t=0;
+
+        try{
+            map<int , Account>::iterator it;
+            for (it = Bank.Accounts.begin(); it != Bank.Accounts.end(); it++,t++)
+            {
+                cout << "hegati" << endl;
+                ChargerThread tmp(it->first,commission);
+                ChargerThread_vector.push_back(tmp);
+                cout << "it->first is: " << it->first << " tmp.accountnumber is: "<< tmp.AccountNumber << endl;
+                rc = pthread_create(&charger_threads[t], NULL, Charger, (void*)&ChargerThread_vector[t]);
+                if (rc)
+                {
+                    BankReadUnlock();
+                    cerr << "ERROR; return code from pthread_create() is " << rc << endl;
+                    //TODO any last words?
+                    free(threads);
+                    exit(-1);
+                }
+            }
+        }
+        catch(...)
+        {
+        cout << "got to catch in ChargerCommissions" << endl;
+        }
+        BankReadUnlock();
+        // for (int i = 0; i < size; i++)
+        // {
+        //     try
+        //     {
+        //         pthread_join(charger_threads[i], NULL);
+        //     }
+        //     catch(const std::exception& e)
+        //     {
+        //         cerr << "Caught" <<  e.what() << '\n';
+        //     //TODO any last words?
+        //     free(threads);
+        // }  
+        //   }
+    }
+
     return(NULL);
 }
 
@@ -429,6 +508,7 @@ int main(int argc, char **argv)
             exit(-1);
         }
     }
+
     rc = pthread_create(&threads[NumATM], NULL, ChargeCommissions, NULL); // Pthread YOSSI - this is the thread of the bank: every half sec chrghes amlot (HAVE TO CHANGE THE FUNC)
         if (rc)
         {
