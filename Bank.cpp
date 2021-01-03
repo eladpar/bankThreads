@@ -420,55 +420,52 @@ void* ChargeCommissions (void* nothing)
         double commission = 3.25;
         cout << "commission is: " << commission << endl;
         BankReadLock();
-        int size = Bank.Accounts.size();
-        charger_threads = (pthread_t*)malloc(sizeof(pthread_t) * size );
-        vector <ChargerThread> ChargerThread_vector;
-
-
-        int rc,t=0;
-
-        try{
-            map<int , Account>::iterator it;
-            for (it = Bank.Accounts.begin(); it != Bank.Accounts.end(); it++,t++)
+        map<int , Account>::iterator it;
+        for (it = Bank.Accounts.begin(); it != Bank.Accounts.end(); it++)
             {
-                ChargerThread tmp(it->first,commission);
-                ChargerThread_vector.push_back(tmp);
+                
             }
-        t=0;
-            for (it = Bank.Accounts.begin(); it != Bank.Accounts.end(); it++,t++)
-            {
-                cout << "hegati and t is: " << t << endl;
 
-                cout << "it->first is: " << it->first << " tmp.accountnumber is: " << ChargerThread_vector[t] << endl;
-                rc = pthread_create(&charger_threads[t], NULL, Charger, (void*)&ChargerThread_vector[t]);
-                if (rc)
-                {
-                    BankReadUnlock();
-                    cerr << "ERROR; return code from pthread_create() is " << rc << endl;
-                    //TODO any last words?
-                    free(threads);
-                    exit(-1);
-                }
-            }
-        }
-        catch(...)
-        {
-        cout << "got to catch in ChargerCommissions" << endl;
-        }
-        BankReadUnlock();
-        // for (int i = 0; i < size; i++)
-        // {
-        //     try
+
+
+        // BankReadLock();
+        // int size = Bank.Accounts.size();
+        // charger_threads = (pthread_t*)malloc(sizeof(pthread_t) * size );
+        // vector <ChargerThread> ChargerThread_vector;
+
+
+        // int rc,t=0;
+
+        // try{
+        //     map<int , Account>::iterator it;
+        //     for (it = Bank.Accounts.begin(); it != Bank.Accounts.end(); it++,t++)
         //     {
-        //         pthread_join(charger_threads[i], NULL);
+        //         ChargerThread tmp(it->first,commission);
+        //         ChargerThread_vector.push_back(tmp);
         //     }
-        //     catch(const std::exception& e)
+        // t=0;
+        //     for (it = Bank.Accounts.begin(); it != Bank.Accounts.end(); it++,t++)
         //     {
-        //         cerr << "Caught" <<  e.what() << '\n';
-        //     //TODO any last words?
-        //     free(threads);
-        // }  
-        //   }
+        //         cout << "hegati and t is: " << t << endl;
+
+        //         cout << "it->first is: " << it->first << " tmp.accountnumber is: " << ChargerThread_vector[t].AccountNumber << endl;
+        //         rc = pthread_create(&charger_threads[t], NULL, Charger, (void*)&ChargerThread_vector[t]);
+        //         if (rc)
+        //         {
+        //             BankReadUnlock();
+        //             cerr << "ERROR; return code from pthread_create() is " << rc << endl;
+        //             //TODO any last words?
+        //             free(threads);
+        //             exit(-1);
+        //         }
+        //     }
+        // }
+        // catch(...)
+        // {
+        // cout << "got to catch in ChargerCommissions" << endl;
+        // }
+        // BankReadUnlock();
+     
     }
 
     return(NULL);
