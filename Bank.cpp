@@ -436,19 +436,6 @@ void *ReadInput(void *atm_tmp)
 
 void* ChargeCommissions (void* nothing)
 {
-    // while(1)
-    // {
-    //     // sleep(1);
-    
-;
-    //cout << "commission is: " << commission << endl;
-    // printf("\033[2J");
-    // printf("\033[1;1H");
-    // cout << "ckearewd" << endl;
-    // // }
-
-
-    
     while(1)
     {
         sleep(3);
@@ -462,6 +449,7 @@ void* ChargeCommissions (void* nothing)
                 down(&it->second.wrt_lock);
                 double Amount = it->second.getBalance()*commission;
                 it->second.setBalance(it->second.getBalance()-(int)Amount);
+                Bank.setSelfBalance(Bank.getSelfBalance()+(int)Amount);
                 lock(&Bank.log_lock);
                 cerr << "Bank: commissions of " << (commission*100) << " % were charged, the bank gained "
                              << (int)Amount << " $ from account " << it->first << endl;
@@ -474,10 +462,47 @@ void* ChargeCommissions (void* nothing)
     return(NULL);
 }
 
+//**************************************************************************************
+// function name: Printer
+// Description: print the exact situation in the bank every 0.5 sec
+//*************************************************************************************
 
+void* Printer (void* nothing)
+{
+    while(1)
+    {
+        usleep(500000);
 
+        down(&Bank.wrt_lock);
+        printf("\033[2J");
+        printf("\033[1:1H");
+        cout << "Current Bank Status" << endl;
+        int AccountNumber; 
+        map<int , Account>::iterator it;
+        for (it = Bank.Accounts.begin(); it != Bank.Accounts.end(); it++)
+            {
+                AccountNumber = it->first;
+                down(&Acc.rd_lock);
+                Acc.rd_count++;
+                if (Acc.rd_count == 1)
+                    down(&Acc.wrt_lock);
+                up(&Acc.rd_lock);
 
+                cout << "Account " << AccountNumber << ": Balance – " 
+                        << Acc.getBalance() << " $ , Account Password – " << Acc.getPassword() << endl;
 
+                down(&Acc.rd_lock);
+                Acc.rd_count--;
+                if (Acc.rd_count == 0)
+                    up(&Acc.wrt_lock);
+                up(&Acc.rd_lock);
+            }
+        cout << "The Bank has " << Bank.getSelfBalance() << " $" << endl;
+        BankReadUnlock();
+    }
+
+    return(NULL);
+}
 
 
 //**************************************************************************************
@@ -499,7 +524,7 @@ int main(int argc, char **argv)
         ATMid++;
     }
 
-    threads = (pthread_t*)malloc(sizeof(pthread_t) * (NumATM+1) );
+    threads = (pthread_t*)malloc(sizeof(pthread_t) * (NumATM+2) );
     //pthread_t threads[NumATM]; // TODO malloc?
     int rc,t;
     for (t = 0; t < NumATM; t++)
@@ -514,7 +539,15 @@ int main(int argc, char **argv)
         }
     }
 
-    rc = pthread_create(&threads[NumATM], NULL, ChargeCommissions, NULL); // Pthread YOSSI - this is the thread of the bank: every half sec chrghes amlot (HAVE TO CHANGE THE FUNC)
+    rc = pthread_create(&threads[NumATM], NULL, ChargeCommissions, NULL); // Pthread YOSSI - this is the thread of the bank: every 3 sec chrghes amlot
+        if (rc)
+        {
+            cerr << "ERROR; return code from pthread_create() is " << rc << endl;
+            //TODO any last words?
+	       free(threads);
+            exit(-1);
+        }
+    rc = pthread_create(&threads[NumATM+1], NULL, Printer, NULL); // Pthread MOSHE - this is the thread of the bank: every half sec prints the situation
         if (rc)
         {
             cerr << "ERROR; return code from pthread_create() is " << rc << endl;
@@ -539,7 +572,8 @@ int main(int argc, char **argv)
 cout << "hegatii" << endl;
     lock(&Bank.log_lock);
     pthread_cancel(threads[NumATM]);
-    
+    pthread_cancel(threads[NumATM+1]);
+
    //TODO any last words?
 	free(threads); 
     exit(0);
