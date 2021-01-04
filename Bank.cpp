@@ -20,7 +20,7 @@
 
 #define CORRECT_PASS 1
 #define NO_ACCOUNT -1
-
+#define SAME_ACCOUNT -2
 using namespace std;
 
 /* Global Variables */
@@ -121,7 +121,6 @@ void *ReadInput(void *atm_tmp)
     {
         // File doesn't exist or some other error
         cerr << "illegal arguments" << endl;
-        //TODO any last words?
 	    free(threads);
         exit(1);
     }
@@ -249,13 +248,13 @@ void *ReadInput(void *atm_tmp)
                     up(&Acc.wrt_lock);                    
 
                 }
-                catch(int reason)
-                {
-                    if (reason == NO_ACCOUNT)
-                    {
-                        sleep(1);
-                    }
-                }
+                // catch(int reason)
+                // {
+                //     if (reason == NO_ACCOUNT)
+                //     {
+                //         sleep(1);
+                //     }
+                // }
                 catch(...)
                 {
 
@@ -309,19 +308,21 @@ void *ReadInput(void *atm_tmp)
             }
             else if (Action == "T") // transfer
             {
+
                 line.erase(0, line.find(delimiter) + delimiter.length());
                 string The_Real_Amount_ = line.substr(0, line.find(delimiter)); 
                 int Target_Account = Amount;
                 Amount = stoi(The_Real_Amount_);
-                if (Target_Account == AccountNumber)
-                {
-                    lock(&Bank.log_lock);
-                    cerr << "Error " << atm.Id 
-                            << ": Your transaction failed – account with the same id exists" << endl;
-                    unlock(&Bank.log_lock);
-                }
                 try 
                 {
+                    if (Target_Account == AccountNumber)
+                    {
+                        lock(&Bank.log_lock);
+                        cerr << "Error " << atm.Id <<": Your transaction failed – account id " 
+                                << AccountNumber << " is the same account" << endl;
+                        unlock(&Bank.log_lock);
+                        throw (SAME_ACCOUNT);
+                    }
                     /* Open of bank reader lock */
                     BankReadLock();
 
@@ -388,6 +389,10 @@ void *ReadInput(void *atm_tmp)
                     {
                         sleep(1);
                     }
+                    else if (reason == SAME_ACCOUNT)
+                    {
+                        sleep(1);
+                    }
                 }
                 catch(...)
                 {
@@ -397,7 +402,6 @@ void *ReadInput(void *atm_tmp)
             else if (Action == "Q") // quit account
             {
                 bool closed = false;
-                int num;
                 int balace;
                 down(&Bank.wrt_lock);
                 if (isExist(AccountNumber, atm.Id) == SUCCESS)
@@ -407,9 +411,8 @@ void *ReadInput(void *atm_tmp)
                     if (isCorrectPassword(AccountNumber, Password, atm.Id) == SUCCESS)
                     {
                         balace = Acc.getBalance();
-                        num = Bank.Accounts.erase(AccountNumber);
-                        if (num != 1)
-                            cout << "ERRORRRRRRRRRRRR in Q" << endl; // TODO [DEBUG]
+                        Bank.Accounts.erase(AccountNumber);
+
                         lock(&Bank.log_lock);
                         cerr << atm.Id << ": Account "<< AccountNumber 
                                     << " is now closed. Balance was " << balace << endl;
@@ -424,7 +427,7 @@ void *ReadInput(void *atm_tmp)
             }
             else
             {
-                cerr << "No Such Action " << Action << endl; // TODO [DEBUG?]
+                cerr << "No Such Action " << Action << endl; 
             }
 
         }
@@ -544,8 +547,7 @@ int main(int argc, char **argv)
         if (rc)
         {
             cerr << "ERROR; return code from pthread_create() is " << rc << endl;
-            //TODO any last words?
-	    free(threads);
+	        free(threads);
             exit(-1);
         }
     }
@@ -554,8 +556,7 @@ int main(int argc, char **argv)
         if (rc)
         {
             cerr << "ERROR; return code from pthread_create() is " << rc << endl;
-            //TODO any last words?
-	       free(threads);
+	        free(threads);
             exit(-1);
         }
         // Pthread MOSHE - this is the thread of the bank: every half sec prints the situation
@@ -564,7 +565,6 @@ int main(int argc, char **argv)
         if (rc)
         {
             cerr << "ERROR; return code from pthread_create() is " << rc << endl;
-            //TODO any last words?
 	       free(threads);
             exit(-1);
         }
@@ -578,18 +578,15 @@ int main(int argc, char **argv)
         catch(const std::exception& e)
         {
             cerr << "Caught" <<  e.what() << '\n';
-	    //TODO any last words?
 	    free(threads);
         }   
     }
     lock(&Bank.log_lock);
-    // pthread_detach(threads[NumATM]);
-    // pthread_detach(threads[NumATM+1]);
+
     pthread_cancel(threads[NumATM]);
     pthread_cancel(threads[NumATM+1]);
     // unlock(&Bank.log_lock);
 
-   //TODO any last words?
 	free(threads); 
     exit(0);
 }
