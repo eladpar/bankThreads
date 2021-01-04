@@ -129,6 +129,7 @@ void *ReadInput(void *atm_tmp)
     {
         while ( getline (file,line) )
         {
+            
             usleep(100000);
             string delimiter = " ";
             string Action = line.substr(0, line.find(delimiter)); //searching for first delimiter and cutting string before
@@ -482,7 +483,11 @@ void* Printer (void* nothing)
 //**************************************************************************************
 int main(int argc, char **argv)
 {
-    if (argc < 3) cerr << "illegal arguments" << endl;
+    if (argc < 2+ atoi(argv[1])) 
+    {
+        cerr << "illegal arguments" << endl;
+        exit(-1);
+    }
     freopen( "log.txt", "w", stderr );
     int NumATM = atoi(argv[1]);
     //int *ptr[NumATM];
@@ -496,7 +501,6 @@ int main(int argc, char **argv)
     }
 
     threads = (pthread_t*)malloc(sizeof(pthread_t) * (NumATM+2) );
-    //pthread_t threads[NumATM]; // TODO malloc?
     int rc,t;
     for (t = 0; t < NumATM; t++)
     {
