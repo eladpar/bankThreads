@@ -1,0 +1,166 @@
+==4344== Memcheck, a memory error detector
+==4344== Copyright (C) 2002-2015, and GNU GPL'd, by Julian Seward et al.
+==4344== Using Valgrind-3.11.0 and LibVEX; rerun with -h for copyright info
+==4344== Command: ./Bank 1 test_input
+==4344== Parent PID: 1646
+==4344== 
+--4344-- 
+--4344-- Valgrind options:
+--4344--    --leak-check=full
+--4344--    --show-leak-kinds=all
+--4344--    --track-origins=yes
+--4344--    --verbose
+--4344--    --log-file=valgrind-out.txt
+--4344-- Contents of /proc/version:
+--4344--   Linux version 4.4.0-197-generic (buildd@lcy01-amd64-026) (gcc version 5.4.0 20160609 (Ubuntu 5.4.0-6ubuntu1~16.04.12) ) #229-Ubuntu SMP Wed Nov 25 11:05:42 UTC 2020
+--4344-- 
+--4344-- Arch and hwcaps: AMD64, LittleEndian, amd64-cx16-lzcnt-rdtscp-sse3-avx-avx2
+--4344-- Page sizes: currently 4096, max supported 4096
+--4344-- Valgrind library directory: /usr/lib/valgrind
+--4344-- Reading syms from /home/os/sandbox/hw2/Bank
+--4344-- Reading syms from /lib/x86_64-linux-gnu/ld-2.23.so
+--4344--   Considering /lib/x86_64-linux-gnu/ld-2.23.so ..
+--4344--   .. CRC mismatch (computed 2b0241bb wanted 2b26b6ff)
+--4344--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/ld-2.23.so ..
+--4344--   .. CRC is valid
+--4344-- Reading syms from /usr/lib/valgrind/memcheck-amd64-linux
+--4344--   Considering /usr/lib/valgrind/memcheck-amd64-linux ..
+--4344--   .. CRC mismatch (computed eea41ea9 wanted 2009db78)
+--4344--    object doesn't have a symbol table
+--4344--    object doesn't have a dynamic symbol table
+--4344-- Scheduler: using generic scheduler lock implementation.
+--4344-- Reading suppressions file: /usr/lib/valgrind/default.supp
+==4344== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-4344-by-os-on-???
+==4344== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-4344-by-os-on-???
+==4344== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-4344-by-os-on-???
+==4344== 
+==4344== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==4344== don't want to do, unless you know exactly what you're doing,
+==4344== or are doing some strange experiment):
+==4344==   /usr/lib/valgrind/../../bin/vgdb --pid=4344 ...command...
+==4344== 
+==4344== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==4344==   /path/to/gdb ./Bank
+==4344== and then give GDB the following command
+==4344==   target remote | /usr/lib/valgrind/../../bin/vgdb --pid=4344
+==4344== --pid is optional if only one valgrind process is running
+==4344== 
+--4344-- REDIR: 0x401cf40 (ld-linux-x86-64.so.2:strlen) redirected to 0x3809e181 (???)
+--4344-- Reading syms from /usr/lib/valgrind/vgpreload_core-amd64-linux.so
+--4344--   Considering /usr/lib/valgrind/vgpreload_core-amd64-linux.so ..
+--4344--   .. CRC mismatch (computed 2567ccf6 wanted 49420590)
+--4344--    object doesn't have a symbol table
+--4344-- Reading syms from /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so
+--4344--   Considering /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so ..
+--4344--   .. CRC mismatch (computed 0e27c9a8 wanted ac585421)
+--4344--    object doesn't have a symbol table
+==4344== WARNING: new redirection conflicts with existing -- ignoring it
+--4344--     old: 0x0401cf40 (strlen              ) R-> (0000.0) 0x3809e181 ???
+--4344--     new: 0x0401cf40 (strlen              ) R-> (2007.0) 0x04c31020 strlen
+--4344-- REDIR: 0x401b890 (ld-linux-x86-64.so.2:index) redirected to 0x4c30bc0 (index)
+--4344-- REDIR: 0x401bab0 (ld-linux-x86-64.so.2:strcmp) redirected to 0x4c320d0 (strcmp)
+--4344-- REDIR: 0x401dca0 (ld-linux-x86-64.so.2:mempcpy) redirected to 0x4c35270 (mempcpy)
+--4344-- Reading syms from /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.21
+--4344--   Considering /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.21 ..
+--4344--   .. CRC mismatch (computed eb112249 wanted d0509bc9)
+--4344--    object doesn't have a symbol table
+--4344-- Reading syms from /lib/x86_64-linux-gnu/libgcc_s.so.1
+--4344--   Considering /lib/x86_64-linux-gnu/libgcc_s.so.1 ..
+--4344--   .. CRC mismatch (computed b9a68419 wanted 29d51b00)
+--4344--    object doesn't have a symbol table
+--4344-- Reading syms from /lib/x86_64-linux-gnu/libpthread-2.23.so
+--4344--   Considering /usr/lib/debug/.build-id/3d/b0b0ee6244f5b89ab1d535f91b17d162cc1701.debug ..
+--4344--   .. build-id is valid
+--4344-- Reading syms from /lib/x86_64-linux-gnu/libc-2.23.so
+--4344--   Considering /lib/x86_64-linux-gnu/libc-2.23.so ..
+--4344--   .. CRC mismatch (computed 53ae885f wanted a963d847)
+--4344--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/libc-2.23.so ..
+--4344--   .. CRC is valid
+--4344-- Reading syms from /lib/x86_64-linux-gnu/libm-2.23.so
+--4344--   Considering /lib/x86_64-linux-gnu/libm-2.23.so ..
+--4344--   .. CRC mismatch (computed 139cd6a9 wanted 1d3df7e7)
+--4344--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/libm-2.23.so ..
+--4344--   .. CRC is valid
+--4344-- REDIR: 0x567ea80 (libc.so.6:strcasecmp) redirected to 0x4a286f0 (_vgnU_ifunc_wrapper)
+--4344-- REDIR: 0x567a300 (libc.so.6:strcspn) redirected to 0x4a286f0 (_vgnU_ifunc_wrapper)
+--4344-- REDIR: 0x5680d70 (libc.so.6:strncasecmp) redirected to 0x4a286f0 (_vgnU_ifunc_wrapper)
+--4344-- REDIR: 0x567c770 (libc.so.6:strpbrk) redirected to 0x4a286f0 (_vgnU_ifunc_wrapper)
+--4344-- REDIR: 0x567cb00 (libc.so.6:strspn) redirected to 0x4a286f0 (_vgnU_ifunc_wrapper)
+--4344-- REDIR: 0x567e1cb (libc.so.6:memcpy@GLIBC_2.2.5) redirected to 0x4a286f0 (_vgnU_ifunc_wrapper)
+--4344-- REDIR: 0x567c480 (libc.so.6:rindex) redirected to 0x4c308a0 (rindex)
+--4344-- REDIR: 0x5673180 (libc.so.6:malloc) redirected to 0x4c2db20 (malloc)
+--4344-- REDIR: 0x567a7a0 (libc.so.6:strlen) redirected to 0x4c30f60 (strlen)
+--4344-- REDIR: 0x567dc70 (libc.so.6:__GI_memcmp) redirected to 0x4c33b90 (__GI_memcmp)
+--4344-- REDIR: 0x5678d50 (libc.so.6:strcmp) redirected to 0x4a286f0 (_vgnU_ifunc_wrapper)
+--4344-- REDIR: 0x568e5f0 (libc.so.6:__strcmp_sse2_unaligned) redirected to 0x4c31f90 (strcmp)
+--4344-- REDIR: 0x567d0e0 (libc.so.6:__GI_strstr) redirected to 0x4c354d0 (__strstr_sse2)
+--4344-- REDIR: 0x5683470 (libc.so.6:memcpy@@GLIBC_2.14) redirected to 0x4a286f0 (_vgnU_ifunc_wrapper)
+--4344-- REDIR: 0x573cf60 (libc.so.6:__memcpy_avx_unaligned) redirected to 0x4c324a0 (memcpy@@GLIBC_2.14)
+--4344-- REDIR: 0x4ec7e60 (libstdc++.so.6:operator new(unsigned long)) redirected to 0x4c2e080 (operator new(unsigned long))
+--4344-- REDIR: 0x5673d80 (libc.so.6:calloc) redirected to 0x4c2faa0 (calloc)
+--4344-- REDIR: 0x4ec7f10 (libstdc++.so.6:operator new[](unsigned long)) redirected to 0x4c2e7a0 (operator new[](unsigned long))
+--4344-- REDIR: 0x567dc30 (libc.so.6:bcmp) redirected to 0x4a286f0 (_vgnU_ifunc_wrapper)
+--4344-- REDIR: 0x575d4f0 (libc.so.6:__memcmp_sse4_1) redirected to 0x4c33cd0 (__memcmp_sse4_1)
+--4344-- REDIR: 0x567d8e0 (libc.so.6:memchr) redirected to 0x4c32170 (memchr)
+--4344-- REDIR: 0x573ca70 (libc.so.6:__memmove_avx_unaligned) redirected to 0x4c32230 (memcpy@GLIBC_2.2.5)
+--4344-- REDIR: 0x56834f0 (libc.so.6:__GI_memcpy) redirected to 0x4c32b00 (__GI_memcpy)
+--4344-- REDIR: 0x567e910 (libc.so.6:__GI_stpcpy) redirected to 0x4c33f80 (__GI_stpcpy)
+--4344-- REDIR: 0x567e430 (libc.so.6:__GI_mempcpy) redirected to 0x4c34fa0 (__GI_mempcpy)
+--4344-- REDIR: 0x4ec5f10 (libstdc++.so.6:operator delete(void*)) redirected to 0x4c2f1e0 (operator delete(void*))
+--4344-- REDIR: 0x5673540 (libc.so.6:free) redirected to 0x4c2ed80 (free)
+--4344-- REDIR: 0x56857e0 (libc.so.6:strchrnul) redirected to 0x4c34da0 (strchrnul)
+--4344-- REDIR: 0x4ec5f40 (libstdc++.so.6:operator delete[](void*)) redirected to 0x4c2f6e0 (operator delete[](void*))
+==4344== 
+==4344== HEAP SUMMARY:
+==4344==     in use at exit: 73,320 bytes in 4 blocks
+==4344==   total heap usage: 18 allocs, 14 frees, 88,175 bytes allocated
+==4344== 
+==4344== Searching for pointers to 4 not-freed blocks
+==4344== Checked 16,899,880 bytes
+==4344== 
+==4344== 40 bytes in 1 blocks are still reachable in loss record 1 of 4
+==4344==    at 0x4C2E0EF: operator new(unsigned long) (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==4344==    by 0x4065E3: __gnu_cxx::new_allocator<ATM>::allocate(unsigned long, void const*) (new_allocator.h:104)
+==4344==    by 0x4062E8: std::allocator_traits<std::allocator<ATM> >::allocate(std::allocator<ATM>&, unsigned long) (alloc_traits.h:491)
+==4344==    by 0x405CE3: std::_Vector_base<ATM, std::allocator<ATM> >::_M_allocate(unsigned long) (stl_vector.h:170)
+==4344==    by 0x40524D: void std::vector<ATM, std::allocator<ATM> >::_M_emplace_back_aux<ATM const&>(ATM const&) (vector.tcc:412)
+==4344==    by 0x404D42: std::vector<ATM, std::allocator<ATM> >::push_back(ATM const&) (stl_vector.h:923)
+==4344==    by 0x404390: main (Bank.cpp:505)
+==4344== 
+==4344== 288 bytes in 1 blocks are possibly lost in loss record 2 of 4
+==4344==    at 0x4C2FB55: calloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==4344==    by 0x40138E4: allocate_dtv (dl-tls.c:322)
+==4344==    by 0x40138E4: _dl_allocate_tls (dl-tls.c:539)
+==4344==    by 0x53DA26E: allocate_stack (allocatestack.c:588)
+==4344==    by 0x53DA26E: pthread_create@@GLIBC_2.2.5 (pthread_create.c:539)
+==4344==    by 0x404494: main (Bank.cpp:523)
+==4344== 
+==4344== 288 bytes in 1 blocks are possibly lost in loss record 3 of 4
+==4344==    at 0x4C2FB55: calloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==4344==    by 0x40138E4: allocate_dtv (dl-tls.c:322)
+==4344==    by 0x40138E4: _dl_allocate_tls (dl-tls.c:539)
+==4344==    by 0x53DA26E: allocate_stack (allocatestack.c:588)
+==4344==    by 0x53DA26E: pthread_create@@GLIBC_2.2.5 (pthread_create.c:539)
+==4344==    by 0x404511: main (Bank.cpp:532)
+==4344== 
+==4344== 72,704 bytes in 1 blocks are still reachable in loss record 4 of 4
+==4344==    at 0x4C2DB8F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==4344==    by 0x4EC3EFF: ??? (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.21)
+==4344==    by 0x40106F9: call_init.part.0 (dl-init.c:72)
+==4344==    by 0x401080A: call_init (dl-init.c:30)
+==4344==    by 0x401080A: _dl_init (dl-init.c:120)
+==4344==    by 0x4000C69: ??? (in /lib/x86_64-linux-gnu/ld-2.23.so)
+==4344==    by 0x2: ???
+==4344==    by 0xFFF0002B6: ???
+==4344==    by 0xFFF0002BD: ???
+==4344==    by 0xFFF0002BF: ???
+==4344== 
+==4344== LEAK SUMMARY:
+==4344==    definitely lost: 0 bytes in 0 blocks
+==4344==    indirectly lost: 0 bytes in 0 blocks
+==4344==      possibly lost: 576 bytes in 2 blocks
+==4344==    still reachable: 72,744 bytes in 2 blocks
+==4344==         suppressed: 0 bytes in 0 blocks
+==4344== 
+==4344== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
+==4344== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)

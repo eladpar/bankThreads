@@ -144,10 +144,11 @@ void *ReadInput(void *atm_tmp)
             int Password = stoi(Password_);
             int Amount = stoi(Amount_);
 
-            //  cout << "Action is : " << Action << " Account Number is: " << AccountNumber 
-            //                     << " Password is: " << Password << " Amount is: " << Amount << endl;
+             cerr << "ATM: " <<  atm.Id << "Action is : " << Action << " Account Number is: " << AccountNumber 
+                                << " Password is: " << Password << " Amount is: " << Amount << endl;
             if (Action == "O") //open account // 
             {
+                cerr << "before open with atm id " << atm.Id << endl;
                 Account temp_account(AccountNumber, Password, Amount, 0);
                 down(&Bank.wrt_lock);
                 sleep(1);
@@ -173,6 +174,7 @@ void *ReadInput(void *atm_tmp)
             {
                 try 
                 {
+                    cerr << "before deposit with atm id " << atm.Id << endl;
                     /* Open of bank reader lock */
                     BankReadLock();
 
@@ -181,9 +183,9 @@ void *ReadInput(void *atm_tmp)
                         BankReadUnlock();
                         throw(NO_ACCOUNT);
                     }
-                                
+                    cerr << "atm: " << atm.Id << " before wrtlock on account : " << AccountNumber << endl;
                     down(&Acc.wrt_lock);
-
+                    cerr << "atm: " << atm.Id << " afterrrr wrtlock on account : " << AccountNumber << endl;  
                     /* Close of bank reader lock*/
                     BankReadUnlock();
                     sleep(1);
@@ -211,7 +213,7 @@ void *ReadInput(void *atm_tmp)
                 {
 
                 }
-
+                cerr << "left deposit with atm id " << atm.Id << endl;
             }
 
   
@@ -220,17 +222,20 @@ void *ReadInput(void *atm_tmp)
 
                 try 
                 {
+                    cerr << "withdraw marker 1 with atm id " << atm.Id << endl;
                     /* Open of bank reader lock */
                     BankReadLock();
-
+                    cerr << "withdraw marker 2 with atm id " << atm.Id << endl;
                     if(isExist(AccountNumber,atm.Id)==NO_ACCOUNT)
                     {
+                        cerr << "withdraw marker 3 with atm id " << atm.Id << endl;
                         BankReadUnlock();
+                        cerr << "withdraw marker 4 with atm id " << atm.Id << endl;
                         throw(NO_ACCOUNT);
                     }
-                                
+                    cerr << "withdraw before acc wrtlock with atm id " << atm.Id << endl;         
                     down(&Acc.wrt_lock);
-
+                    cerr << "withdraw after acc wrtlock with atm id " << atm.Id << endl;
                     /* Close of bank reader lock*/
                     BankReadUnlock();
                     sleep(1);
@@ -260,13 +265,16 @@ void *ReadInput(void *atm_tmp)
                 {
 
                 }
+            cerr << "left withdraw with atm id " << atm.Id << endl;
             }
             else if (Action == "B") // balance
             {
+                cerr << "before  balance with atm id " << atm.Id << endl;
                 int curr_password;
                 int curr_balance;
                 try
                 {
+                    BankReadLock();
                     down(&Acc.rd_lock);
                     Acc.rd_count++;
                     if (Acc.rd_count == 1)
@@ -296,21 +304,30 @@ void *ReadInput(void *atm_tmp)
                     if (Acc.rd_count == 0)
                         up(&Acc.wrt_lock);
                     up(&Acc.rd_lock);
+                    BankReadUnlock();
                 }
                 catch (...)
                 {
                     cerr << "Error " << atm.Id <<": Your transaction failed – account id " 
                                             << AccountNumber << " does not exist" << endl;
+                    BankReadUnlock();
                 }
 
             }
             else if (Action == "T") // transfer
             {
+                cerr << "before  transfer with atm id " << atm.Id << endl;
                 line.erase(0, line.find(delimiter) + delimiter.length());
                 string The_Real_Amount_ = line.substr(0, line.find(delimiter)); 
                 int Target_Account = Amount;
                 Amount = stoi(The_Real_Amount_);
-
+                if (Target_Account == AccountNumber)
+                {
+                    lock(&Bank.log_lock);
+                    cerr << "Error " << atm.Id 
+                            << ": Your transaction failed – account with the same id exists trasnferrrrr" << endl;
+                    unlock(&Bank.log_lock);
+                }
                 try 
                 {
                     /* Open of bank reader lock */
@@ -318,20 +335,38 @@ void *ReadInput(void *atm_tmp)
 
                     if(isExist(AccountNumber,atm.Id)==NO_ACCOUNT || isExist(Target_Account,atm.Id)==NO_ACCOUNT)
                     {
+                        cerr << "  got here 1" << endl;
                         BankReadUnlock();
                         throw(NO_ACCOUNT);
                     }
-                                
-                    down(&Acc.wrt_lock);
-                    down(&TargetAcc.wrt_lock);
+                    if (AccountNumber < Target_Account)
+                    {
+                        down(&Acc.wrt_lock);
+                        down(&TargetAcc.wrt_lock);
+                    }
+                    else
+                    {
+                        down(&TargetAcc.wrt_lock);
+                        down(&Acc.wrt_lock);
+                    }
+                    
                     /* Close of bank reader lock*/
                     BankReadUnlock();
                     sleep(1);
                     if(isCorrectPassword(AccountNumber,Password,atm.Id)==WRONG_PASSWORD || 
                                 isIllegalWithdraw(AccountNumber,Amount,atm.Id)==ILLEGAL_WITHDRAW)
                     {
-                        up(&TargetAcc.wrt_lock);
-                        up(&Acc.wrt_lock);
+                        // this is to prevent deadlock and always lock in spesific order
+                        if (AccountNumber < Target_Account) 
+                        {
+                            up(&TargetAcc.wrt_lock);
+                            up(&Acc.wrt_lock);
+                        }
+                        else
+                        {
+                            up(&Acc.wrt_lock);
+                            up(&TargetAcc.wrt_lock);
+                        }
                         throw(WRONG_PASSWORD);
                     }
 
@@ -345,8 +380,16 @@ void *ReadInput(void *atm_tmp)
                                 << " new target account balance is " << TargetAcc.getBalance() << endl; 
                     unlock(&Bank.log_lock);
 
-                    up(&TargetAcc.wrt_lock);
-                    up(&Acc.wrt_lock);
+                    if (AccountNumber < Target_Account)
+                    {
+                        up(&TargetAcc.wrt_lock);
+                        up(&Acc.wrt_lock);
+                    }
+                    else
+                    {
+                        up(&Acc.wrt_lock);
+                        up(&TargetAcc.wrt_lock);
+                    }
                 }
                 catch(int reason)
                 {
@@ -358,10 +401,12 @@ void *ReadInput(void *atm_tmp)
                 catch(...)
                 {
                 }
+                cerr << "left transfer with atm id " << atm.Id << endl;
             }
             
             else if (Action == "Q") // quit account
             {
+                cerr << "before close with atm id " << atm.Id << endl;
                 bool closed = false;
                 int num;
                 int balace;
@@ -409,12 +454,15 @@ void *ReadInput(void *atm_tmp)
 
 void* ChargeCommissions (void* nothing)
 {
+    pthread_detach(pthread_self());
     while(1)
     {
         sleep(3);
         srand((unsigned) time(0));
         double commission = (20 + (rand()%(49 -20 + 1)) ) / 1000.0;
+        cerr << "before bank readlock charger" << endl;
         BankReadLock();
+        cerr << "after bank readlock charger" << endl;
         map<int , Account>::iterator it;
         for (it = Bank.Accounts.begin(); it != Bank.Accounts.end(); it++)
             {
@@ -430,7 +478,7 @@ void* ChargeCommissions (void* nothing)
             }
         BankReadUnlock();
     }
-
+    cerr << "left charger" << endl;
     return(NULL);
 }
 
@@ -441,10 +489,11 @@ void* ChargeCommissions (void* nothing)
 
 void* Printer (void* nothing)
 {
+        pthread_detach(pthread_self());
     while(1)
     {
         usleep(500000);
-
+        cerr << "before printer locksss" << endl;
         down(&Bank.wrt_lock);
         printf("\033[2J");
         printf("\033[1:1H");
@@ -472,7 +521,7 @@ void* Printer (void* nothing)
         cout << "The Bank has " << Bank.getSelfBalance() << " $" << endl;
         up(&Bank.wrt_lock);
     }
-
+    cerr << "left printer" << endl;
     return(NULL);
 }
 
@@ -524,6 +573,7 @@ int main(int argc, char **argv)
         }
         // Pthread MOSHE - this is the thread of the bank: every half sec prints the situation
     rc = pthread_create(&threads[NumATM+1], NULL, Printer, NULL); 
+
         if (rc)
         {
             cerr << "ERROR; return code from pthread_create() is " << rc << endl;
@@ -546,9 +596,11 @@ int main(int argc, char **argv)
         }   
     }
     lock(&Bank.log_lock);
+    // pthread_detach(threads[NumATM]);
+    // pthread_detach(threads[NumATM+1]);
     pthread_cancel(threads[NumATM]);
     pthread_cancel(threads[NumATM+1]);
-    unlock(&Bank.log_lock);
+    // unlock(&Bank.log_lock);
 
    //TODO any last words?
 	free(threads); 
