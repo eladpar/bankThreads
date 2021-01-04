@@ -144,11 +144,10 @@ void *ReadInput(void *atm_tmp)
             int Password = stoi(Password_);
             int Amount = stoi(Amount_);
 
-             cerr << "ATM: " <<  atm.Id << "Action is : " << Action << " Account Number is: " << AccountNumber 
-                                << " Password is: " << Password << " Amount is: " << Amount << endl;
+            //  cout << "Action is : " << Action << " Account Number is: " << AccountNumber 
+            //                     << " Password is: " << Password << " Amount is: " << Amount << endl;
             if (Action == "O") //open account // 
             {
-                cerr << "before open with atm id " << atm.Id << endl;
                 Account temp_account(AccountNumber, Password, Amount, 0);
                 down(&Bank.wrt_lock);
                 sleep(1);
@@ -174,7 +173,6 @@ void *ReadInput(void *atm_tmp)
             {
                 try 
                 {
-                    cerr << "before deposit with atm id " << atm.Id << endl;
                     /* Open of bank reader lock */
                     BankReadLock();
 
@@ -183,9 +181,9 @@ void *ReadInput(void *atm_tmp)
                         BankReadUnlock();
                         throw(NO_ACCOUNT);
                     }
-                    cerr << "atm: " << atm.Id << " before wrtlock on account : " << AccountNumber << endl;
+                                
                     down(&Acc.wrt_lock);
-                    cerr << "atm: " << atm.Id << " afterrrr wrtlock on account : " << AccountNumber << endl;  
+
                     /* Close of bank reader lock*/
                     BankReadUnlock();
                     sleep(1);
@@ -213,7 +211,7 @@ void *ReadInput(void *atm_tmp)
                 {
 
                 }
-                cerr << "left deposit with atm id " << atm.Id << endl;
+
             }
 
   
@@ -222,20 +220,17 @@ void *ReadInput(void *atm_tmp)
 
                 try 
                 {
-                    cerr << "withdraw marker 1 with atm id " << atm.Id << endl;
                     /* Open of bank reader lock */
                     BankReadLock();
-                    cerr << "withdraw marker 2 with atm id " << atm.Id << endl;
+
                     if(isExist(AccountNumber,atm.Id)==NO_ACCOUNT)
                     {
-                        cerr << "withdraw marker 3 with atm id " << atm.Id << endl;
                         BankReadUnlock();
-                        cerr << "withdraw marker 4 with atm id " << atm.Id << endl;
                         throw(NO_ACCOUNT);
                     }
-                    cerr << "withdraw before acc wrtlock with atm id " << atm.Id << endl;         
+                                
                     down(&Acc.wrt_lock);
-                    cerr << "withdraw after acc wrtlock with atm id " << atm.Id << endl;
+
                     /* Close of bank reader lock*/
                     BankReadUnlock();
                     sleep(1);
@@ -265,11 +260,9 @@ void *ReadInput(void *atm_tmp)
                 {
 
                 }
-            cerr << "left withdraw with atm id " << atm.Id << endl;
             }
             else if (Action == "B") // balance
             {
-                cerr << "before  balance with atm id " << atm.Id << endl;
                 int curr_password;
                 int curr_balance;
                 try
@@ -316,7 +309,6 @@ void *ReadInput(void *atm_tmp)
             }
             else if (Action == "T") // transfer
             {
-                cerr << "before  transfer with atm id " << atm.Id << endl;
                 line.erase(0, line.find(delimiter) + delimiter.length());
                 string The_Real_Amount_ = line.substr(0, line.find(delimiter)); 
                 int Target_Account = Amount;
@@ -325,7 +317,7 @@ void *ReadInput(void *atm_tmp)
                 {
                     lock(&Bank.log_lock);
                     cerr << "Error " << atm.Id 
-                            << ": Your transaction failed – account with the same id exists trasnferrrrr" << endl;
+                            << ": Your transaction failed – account with the same id exists" << endl;
                     unlock(&Bank.log_lock);
                 }
                 try 
@@ -335,7 +327,6 @@ void *ReadInput(void *atm_tmp)
 
                     if(isExist(AccountNumber,atm.Id)==NO_ACCOUNT || isExist(Target_Account,atm.Id)==NO_ACCOUNT)
                     {
-                        cerr << "  got here 1" << endl;
                         BankReadUnlock();
                         throw(NO_ACCOUNT);
                     }
@@ -401,12 +392,10 @@ void *ReadInput(void *atm_tmp)
                 catch(...)
                 {
                 }
-                cerr << "left transfer with atm id " << atm.Id << endl;
             }
             
             else if (Action == "Q") // quit account
             {
-                cerr << "before close with atm id " << atm.Id << endl;
                 bool closed = false;
                 int num;
                 int balace;
@@ -460,9 +449,7 @@ void* ChargeCommissions (void* nothing)
         sleep(3);
         srand((unsigned) time(0));
         double commission = (20 + (rand()%(49 -20 + 1)) ) / 1000.0;
-        cerr << "before bank readlock charger" << endl;
         BankReadLock();
-        cerr << "after bank readlock charger" << endl;
         map<int , Account>::iterator it;
         for (it = Bank.Accounts.begin(); it != Bank.Accounts.end(); it++)
             {
@@ -478,7 +465,7 @@ void* ChargeCommissions (void* nothing)
             }
         BankReadUnlock();
     }
-    cerr << "left charger" << endl;
+
     return(NULL);
 }
 
@@ -493,7 +480,7 @@ void* Printer (void* nothing)
     while(1)
     {
         usleep(500000);
-        cerr << "before printer locksss" << endl;
+
         down(&Bank.wrt_lock);
         printf("\033[2J");
         printf("\033[1:1H");
@@ -521,7 +508,7 @@ void* Printer (void* nothing)
         cout << "The Bank has " << Bank.getSelfBalance() << " $" << endl;
         up(&Bank.wrt_lock);
     }
-    cerr << "left printer" << endl;
+
     return(NULL);
 }
 
