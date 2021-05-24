@@ -44,16 +44,25 @@ int BankData::get_ATMcounter()
 {
     return ATMcounter;
 }
+int BankData::getSelfBalance()
+{
+    return Self.getBalance();
+}
 
 void BankData::promote_ATMcounter()
 {
     ATMcounter++;
 }
-
+void BankData::setSelfBalance(int balance)
+{
+    Self.setBalance(balance);
+}
 BankData::~BankData()
 {
 
 }
+
+
 
 ATM::ATM(char *argv,int id)
 {
