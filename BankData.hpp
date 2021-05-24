@@ -9,8 +9,8 @@
 #include <algorithm>
 #include <semaphore.h>
 
-#define up sem_wait
-#define down sem_post
+#define down sem_wait
+#define up sem_post
 using namespace std;
 
 class Account 
@@ -64,15 +64,17 @@ class BankData
 		/* Variables */
 		map <int , Account> Accounts;
 		pthread_mutex_t log_lock;
-
+		Account Self;
 		sem_t wrt_lock;
 		sem_t rd_lock;
 		int rd_count;
 		
 		/* Getters */
 		int get_ATMcounter();
+		int getSelfBalance();
 		/* Setters */
 		void promote_ATMcounter();
+		void setSelfBalance(int balance);
 		/* Destructor */
 		~BankData();
 
@@ -89,10 +91,6 @@ class ATM
 		/* Variables */
 		int Id;
 		string command;
-
-		/* Printers */
-		//void printer_AccNumberIsTaken(); 
-		//void printer_AccOpenSucceeded(int id,int password,int balance);
 
 		/* Destructor */
 		~ATM(){};
